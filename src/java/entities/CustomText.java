@@ -6,12 +6,14 @@
 package entities;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  *
  * @author 2dam
  */
 @Entity
+@Table(name="customText",schema="bloomingdb")
 public class CustomText extends Content {
 
     private static final long serialVersionUID = 1L;

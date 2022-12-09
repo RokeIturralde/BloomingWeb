@@ -6,12 +6,14 @@
 package entities;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  *
  * @author 2dam
  */
 @Entity
+@Table(name="customImage",schema="bloomingdb")
 public class CustomImage extends Content {
 
     private static final long serialVersionUID = 1L;
