@@ -16,6 +16,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -23,9 +25,10 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "content", schema = "bloomingdb")
+@XmlRootElement
 public class Content implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    //private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer contentId;
@@ -47,6 +50,7 @@ public class Content implements Serializable {
         this.contentId = id;
     }
 
+    @XmlTransient
     public List<Album> getAlbums() {
         return albums;
     }

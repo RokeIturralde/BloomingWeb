@@ -19,6 +19,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
@@ -27,6 +28,7 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "user", schema = "bloomingdb")
+@XmlRootElement
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -44,7 +46,7 @@ public class User implements Serializable {
     /**
      * Relational field containing the albums created by the User
      */
-    @OneToMany(mappedBy = "album")
+    @OneToMany(mappedBy = "creator")
     private List<Album> createdAlbums;
 
     @XmlTransient
@@ -62,6 +64,7 @@ public class User implements Serializable {
     @JoinTable(name = "user_sharedAlbums", schema = "bloomingdb")
     private List<Album> sharedAlbums;
 
+    @XmlTransient
     public List<Album> getSharedAlbums() {
         return sharedAlbums;
     }
