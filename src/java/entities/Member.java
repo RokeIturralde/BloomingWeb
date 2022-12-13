@@ -20,7 +20,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "user", schema = "bloomingdb")
 @XmlRootElement
 public class Member extends User implements Serializable {
-
+    
+    private static final long serialVersionUID = 1L;
     private Date memberEndingDate;
     private Date memberStartingDate;
     @ManyToOne

@@ -14,11 +14,19 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author 2dam
  */
 @Entity
-@Table(name="customImage",schema="bloomingdb")
+//@Table(name = "customImage", schema = "bloomingdb")
 @XmlRootElement
 public class CustomImage extends Content {
 
     private static final long serialVersionUID = 1L;
     private Byte[] bytes;
+
+    public Byte[] getBytes() {
+        return bytes;
+    }
+
+    public void setBytes(Byte[] bytes) {
+        this.bytes = bytes;
+    }
 
 }
