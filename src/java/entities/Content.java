@@ -9,38 +9,87 @@ import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author 2dam
  */
 @Entity
+@Table(name = "content", schema = "bloomingdb")
+@Inheritance(strategy = InheritanceType.JOINED)
+@XmlRootElement
 public class Content implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Integer contentId;
+    /**
+     * Relation containing the list albums that include the Content
+     */
+    @ManyToMany(mappedBy = "contents")
     private List<Album> albums;
     private String name;
-    private ContentType type;
+    @Enumerated(EnumType.STRING)
+    private ContentType contentType;
     private Date uploadDate;
 
-    public Integer getId() {
-        return id;
+    public Integer getContentId() {
+        return contentId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setContentId(Integer id) {
+        this.contentId = id;
+    }
+
+    @XmlTransient
+    public List<Album> getAlbums() {
+        return albums;
+    }
+
+    public void setAlbums(List<Album> albums) {
+        this.albums = albums;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public ContentType getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(ContentType contentType) {
+        this.contentType = contentType;
+    }
+
+    public Date getUploadDate() {
+        return uploadDate;
+    }
+
+    public void setUploadDate(Date uploadDate) {
+        this.uploadDate = uploadDate;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (contentId != null ? contentId.hashCode() : 0);
         return hash;
     }
 
@@ -51,7 +100,7 @@ public class Content implements Serializable {
             return false;
         }
         Content other = (Content) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.contentId == null && other.contentId != null) || (this.contentId != null && !this.contentId.equals(other.contentId))) {
             return false;
         }
         return true;
@@ -59,7 +108,7 @@ public class Content implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.Content[ id=" + id + " ]";
+        return "entities.Content[ id=" + contentId + " ]";
     }
 
 }

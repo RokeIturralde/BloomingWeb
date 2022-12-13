@@ -9,40 +9,80 @@ import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author 2dam
  */
 @Entity
+@Table(name = "album", schema = "bloomingdb")
+@XmlRootElement
 public class Album implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
-    private Date creationDate;
-    private User creator;
-    private String description;
-    private String name;
-    private List<User> users;
-    private List<Content> contents;
+    private Integer idAlbum;
 
-    public Integer getId() {
-        return id;
+    private Date creationDate;
+    /**
+     * Relation containing the user creator of the Album
+     */
+    @ManyToOne
+    private User creator;
+
+    public User getUser() {
+        return creator;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setUser(User creator) {
+        this.creator = creator;
+    }
+    private String description;
+    private String name;
+    /**
+     * Relation containing the list of users that were shared the Album
+     */
+    @ManyToMany(mappedBy = "sharedAlbums")
+    private List<User> users;
+
+    public Integer getId() {
+        return idAlbum;
+    }
+
+    @XmlTransient
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+    /**
+     * Relational field containing the list contents in the Album
+     */
+    @ManyToMany
+    @JoinTable(name = "contents_albums", schema = "bloomingdb")
+    private List<Content> contents;
+
+    public void setId(Integer idAlbum) {
+        this.idAlbum = idAlbum;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (idAlbum != null ? idAlbum.hashCode() : 0);
         return hash;
     }
 
@@ -53,7 +93,7 @@ public class Album implements Serializable {
             return false;
         }
         Album other = (Album) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.idAlbum == null && other.idAlbum != null) || (this.idAlbum != null && !this.idAlbum.equals(other.idAlbum))) {
             return false;
         }
         return true;
@@ -61,7 +101,7 @@ public class Album implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.Album[ id=" + id + " ]";
+        return "entities.Album[ id=" + idAlbum + " ]";
     }
 
 }
