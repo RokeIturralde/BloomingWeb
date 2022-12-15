@@ -9,14 +9,14 @@ import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author 2dam
  */
 @Entity
+//@MappedSuperclass
 @Table(name = "content", schema = "bloomingdb")
 @Inheritance(strategy = InheritanceType.JOINED)
 @XmlRootElement
@@ -38,11 +39,9 @@ public class Content implements Serializable {
     /**
      * Relation containing the list albums that include the Content
      */
-    @ManyToMany(mappedBy = "contents")
+    @ManyToMany(mappedBy = "contents", fetch = FetchType.EAGER)
     private List<Album> albums;
     private String name;
-    @Enumerated(EnumType.STRING)
-    private ContentType contentType;
     private Date uploadDate;
 
     public Integer getContentId() {
@@ -68,14 +67,6 @@ public class Content implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public ContentType getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(ContentType contentType) {
-        this.contentType = contentType;
     }
 
     public Date getUploadDate() {

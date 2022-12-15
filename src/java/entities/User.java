@@ -7,14 +7,15 @@ package entities;
 
 import java.io.Serializable;
 import java.util.List;
-import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
@@ -28,6 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "user", schema = "bloomingdb")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @XmlRootElement
 public class User implements Serializable {
 
@@ -61,7 +63,8 @@ public class User implements Serializable {
      * Relational field containing the list of albums shared with the User
      */
     @ManyToMany
-    @JoinTable(name = "user_sharedAlbums", schema = "bloomingdb")
+    @JoinTable(name = "user_sharedAlbums", schema = "bloomingdb", joinColumns = @JoinColumn(name = "user_idUser", referencedColumnName = "idUser"),
+            inverseJoinColumns = @JoinColumn(name = "album_idAlbum", referencedColumnName = "idAlbum"))
     private List<Album> sharedAlbums;
 
     @XmlTransient
