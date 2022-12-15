@@ -13,10 +13,13 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -24,6 +27,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "album", schema = "bloomingdb")
+@XmlRootElement
 public class Album implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -57,6 +61,7 @@ public class Album implements Serializable {
         return idAlbum;
     }
 
+    @XmlTransient
     public List<User> getUsers() {
         return users;
     }
@@ -67,12 +72,54 @@ public class Album implements Serializable {
     /**
      * Relational field containing the list contents in the Album
      */
-    @ManyToMany
-    @JoinTable(name = "contents_albums", schema = "bloomingdb")
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "contents_albums", schema = "bloomingdb", joinColumns = {@JoinColumn(name = "album_idAlbum", referencedColumnName = "idAlbum")},
+            inverseJoinColumns = {@JoinColumn(name = "content_contentId", referencedColumnName = "contentId")})
     private List<Content> contents;
 
     public void setId(Integer idAlbum) {
         this.idAlbum = idAlbum;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public User getCreator() {
+        return creator;
+    }
+
+    public void setCreator(User creator) {
+        this.creator = creator;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @XmlTransient
+    public List<Content> getContents() {
+        return contents;
+    }
+
+    public void setContents(List<Content> contents) {
+        this.contents = contents;
     }
 
     @Override

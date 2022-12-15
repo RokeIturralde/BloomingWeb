@@ -10,6 +10,7 @@ import java.sql.Date;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -17,6 +18,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "user", schema = "bloomingdb")
+@XmlRootElement
 public class Member extends User implements Serializable {
 
     private Date memberEndingDate;

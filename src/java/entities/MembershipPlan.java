@@ -13,6 +13,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -20,6 +22,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "membershipPlan", schema = "bloomingdb")
+@XmlRootElement
 public class MembershipPlan implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -32,7 +35,7 @@ public class MembershipPlan implements Serializable {
     /**
      * Relational field containing the members subscribed to the plan
      */
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "plan")
     private List<Member> members;
     private String name;
     private Float price;
@@ -70,6 +73,7 @@ public class MembershipPlan implements Serializable {
         this.duration = duration;
     }
 
+    @XmlTransient
     public List<Member> getMembers() {
         return members;
     }
