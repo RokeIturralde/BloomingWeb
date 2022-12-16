@@ -6,7 +6,7 @@
 package entities;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,6 +18,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -33,8 +35,8 @@ public class Album implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer idAlbum;
-
+    private Integer id;
+    @Temporal(TemporalType.DATE)
     private Date creationDate;
     /**
      * Relation containing the user creator of the Album
@@ -58,7 +60,7 @@ public class Album implements Serializable {
     private List<User> users;
 
     public Integer getId() {
-        return idAlbum;
+        return id;
     }
 
     @XmlTransient
@@ -73,12 +75,13 @@ public class Album implements Serializable {
      * Relational field containing the list contents in the Album
      */
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "contents_albums", schema = "bloomingdb", joinColumns = {@JoinColumn(name = "album_idAlbum", referencedColumnName = "idAlbum")},
-            inverseJoinColumns = {@JoinColumn(name = "content_contentId", referencedColumnName = "contentId")})
+    @JoinTable(name = "contents_albums", schema = "bloomingdb", joinColumns = {
+        @JoinColumn(name = "album_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "content_id", referencedColumnName = "id")})
     private List<Content> contents;
 
     public void setId(Integer idAlbum) {
-        this.idAlbum = idAlbum;
+        this.id = idAlbum;
     }
 
     public Date getCreationDate() {
@@ -125,7 +128,7 @@ public class Album implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idAlbum != null ? idAlbum.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -136,7 +139,7 @@ public class Album implements Serializable {
             return false;
         }
         Album other = (Album) object;
-        if ((this.idAlbum == null && other.idAlbum != null) || (this.idAlbum != null && !this.idAlbum.equals(other.idAlbum))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -144,7 +147,7 @@ public class Album implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.Album[ id=" + idAlbum + " ]";
+        return "entities.Album[ id=" + id + " ]";
     }
 
 }
