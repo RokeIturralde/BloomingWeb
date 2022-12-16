@@ -38,7 +38,6 @@ public class ApplicationConfig extends Application {
         resources.add(service.CustomTextFacadeREST.class);
         resources.add(service.MemberFacadeREST.class);
         resources.add(service.MembershipPlanFacadeREST.class);
-        resources.add(service.UserFacadeREST.class);
     }
 
 }
