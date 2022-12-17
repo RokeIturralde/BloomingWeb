@@ -6,6 +6,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -20,6 +21,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -36,7 +39,7 @@ public class User implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer idUser;
+    private Integer id;
     private String email;
     private String fullName;
     private String login;
@@ -45,6 +48,8 @@ public class User implements Serializable {
     private Privilege privilege;
     @Enumerated(EnumType.STRING)
     private Status status;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastPasswordChange;
     /**
      * Relational field containing the albums created by the User
      */
@@ -63,8 +68,8 @@ public class User implements Serializable {
      * Relational field containing the list of albums shared with the User
      */
     @ManyToMany
-    @JoinTable(name = "user_sharedAlbums", schema = "bloomingdb", joinColumns = @JoinColumn(name = "user_idUser", referencedColumnName = "idUser"),
-            inverseJoinColumns = @JoinColumn(name = "album_idAlbum", referencedColumnName = "idAlbum"))
+    @JoinTable(name = "user_sharedAlbums", schema = "bloomingdb", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "album_id", referencedColumnName = "id"))
     private List<Album> sharedAlbums;
 
     @XmlTransient
@@ -77,11 +82,11 @@ public class User implements Serializable {
     }
 
     public Integer getIdUser() {
-        return idUser;
+        return id;
     }
 
     public void setIdUser(Integer idUser) {
-        this.idUser = idUser;
+        this.id = idUser;
     }
 
     public String getEmail() {
@@ -132,10 +137,18 @@ public class User implements Serializable {
         this.status = status;
     }
 
+    public Date getLastPasswordChange() {
+        return lastPasswordChange;
+    }
+
+    public void setLastPasswordChange(Date lastPasswordChange) {
+        this.lastPasswordChange = lastPasswordChange;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idUser != null ? idUser.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -146,7 +159,7 @@ public class User implements Serializable {
             return false;
         }
         User other = (User) object;
-        if ((this.idUser == null && other.idUser != null) || (this.idUser != null && !this.idUser.equals(other.idUser))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -154,7 +167,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.User[ id=" + idUser + " ]";
+        return "entities.User[ id=" + id + " ]";
     }
 
 }

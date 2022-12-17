@@ -6,7 +6,7 @@
 package entities;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,6 +18,8 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -25,8 +27,8 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author 2dam
  */
-@Entity
 //@MappedSuperclass
+@Entity
 @Table(name = "content", schema = "bloomingdb")
 @Inheritance(strategy = InheritanceType.JOINED)
 @XmlRootElement
@@ -35,21 +37,22 @@ public class Content implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer contentId;
+    private Integer id;
     /**
      * Relation containing the list albums that include the Content
      */
     @ManyToMany(mappedBy = "contents", fetch = FetchType.EAGER)
     private List<Album> albums;
     private String name;
+    @Temporal(TemporalType.DATE)
     private Date uploadDate;
 
     public Integer getContentId() {
-        return contentId;
+        return id;
     }
 
     public void setContentId(Integer id) {
-        this.contentId = id;
+        this.id = id;
     }
 
     @XmlTransient
@@ -80,7 +83,7 @@ public class Content implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (contentId != null ? contentId.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -91,7 +94,7 @@ public class Content implements Serializable {
             return false;
         }
         Content other = (Content) object;
-        if ((this.contentId == null && other.contentId != null) || (this.contentId != null && !this.contentId.equals(other.contentId))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -99,7 +102,7 @@ public class Content implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.Content[ id=" + contentId + " ]";
+        return "entities.Content[ id=" + id + " ]";
     }
 
 }
