@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author 2dam
+ * @author Roke
  */
 @Entity
 @Table(name = "customImage", schema = "bloomingdb")
