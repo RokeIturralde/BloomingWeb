@@ -6,6 +6,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
@@ -16,6 +17,8 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -26,6 +29,23 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Roke
  */
+@NamedQueries({
+    @NamedQuery(
+            name = "findAllContent", query = "SELECT c FROM Content c"
+    )
+    ,
+        @NamedQuery(
+            name = "findContentByName", query = "SELECT c FROM Content c where c.name=:contentName"
+    )
+    ,
+/*@NamedQuery(
+            name = "findContentByAlbum", query = "SELECT c FROM Content c, Contents_Albums ca where ca.album_id=:albumId and c.id=ca.content_id"
+    )
+    ,*/
+@NamedQuery(
+            name = "findContentByDate", query = "SELECT c FROM Content c where c.uploadDate=:date"
+    )
+})
 @Entity
 @Table(name = "content", schema = "bloomingdb")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -102,5 +122,4 @@ public class Content implements Serializable {
     public String toString() {
         return "entities.Content[ id=" + id + " ]";
     }
-
 }

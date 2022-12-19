@@ -6,8 +6,11 @@
 package service;
 
 import entities.Content;
+import exceptions.FindAllException;
+import exceptions.FindContentException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
@@ -19,73 +22,108 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import restfulContent.EJBContentManager;
 
 /**
  *
  * @author 2dam
  */
-@Stateless
 @Path("entities.content")
-public class ContentFacadeREST extends AbstractFacade<Content> {
+public class ContentFacadeREST extends EJBContentManager {
 
     @PersistenceContext(unitName = "BloomingWebPU")
     private EntityManager em;
 
-    public ContentFacadeREST() {
-        super(Content.class);
-    }
-
     @POST
-    @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(Content entity) {
-        super.create(entity);
+        em.persist(entity);
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void edit(@PathParam("id") Integer id, Content entity) {
-        super.edit(entity);
+        em.merge(entity);
     }
 
     @DELETE
     @Path("{id}")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void remove(@PathParam("id") Integer id) {
-        super.remove(super.find(id));
+        em.remove(em.find(Content.class, id));
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Content find(@PathParam("id") Integer id) {
-        return super.find(id);
+        return em.find(Content.class, id);
     }
 
     @GET
-    @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Content> findAll() {
-        return super.findAll();
+    public List<Content> findAll() throws FindAllException {
+        List<Content> contents = null;
+        contents = findAllContent();
+        return contents;
     }
 
     @GET
-    @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Content> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
+    public List<Content> findAllContent() throws FindAllException {
+        List<Content> contents = new ArrayList<>();
+        try {
+            contents = em.createNamedQuery("findAllContent").getResultList();
+        } catch (Exception e) {
+            throw new FindAllException();
+
+        }
+        return contents;
+    }
+
+    public List<Content> findContentByUploadDate(Date uploadDate) throws FindAllException {
+        List<Content> contents = new ArrayList<>();
+        try {
+            contents = em.createNamedQuery("findContentByDate").setParameter("date", uploadDate).getResultList();
+        } catch (Exception e) {
+            throw new FindAllException();
+
+        }
+        return contents;
     }
 
     @GET
-    @Path("count")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String countREST() {
-        return String.valueOf(super.count());
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Content> findContentByName(String name) throws FindContentException {
+        List<Content> contents = new ArrayList<>();
+        try {
+            contents = em.createNamedQuery("findContentByName").setParameter("contentName", name).getResultList();
+        } catch (Exception e) {
+            throw new FindContentException();
+
+        }
+        return contents;
     }
 
-    @Override
-    protected EntityManager getEntityManager() {
-        return em;
+    /* public List<Content> findContentByAlbum(Integer albumId) throws FindContentException {
+        List<Content> contents = new ArrayList<>();
+        try {
+            contents = em.createNamedQuery("findContentByName").setParameter("albumId", albumId).getResultList();
+        } catch (Exception e) {
+            throw new FindContentException();
+
+        }
+        return contents;
+    }*/
+    public List<Content> findContentByDate(Date uploadDate) throws FindContentException {
+        List<Content> contents = new ArrayList<>();
+        try {
+            contents = em.createNamedQuery("findContentByDate").setParameter("date", uploadDate).getResultList();
+        } catch (Exception e) {
+            throw new FindContentException();
+
+        }
+        return contents;
     }
-    
 }

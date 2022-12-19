@@ -32,7 +32,6 @@ public class ApplicationConfig extends Application {
      * If required, comment out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
-        resources.add(restfulContent.EJBContentManager.class);
         resources.add(service.AlbumFacadeREST.class);
         resources.add(service.ContentFacadeREST.class);
         resources.add(service.CustomImageFacadeREST.class);
