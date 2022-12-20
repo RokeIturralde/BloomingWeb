@@ -6,26 +6,67 @@
 package restfulContent;
 
 import entities.Content;
-import entities.CustomImage;
-import entities.CustomText;
-import exceptions.CreateException;
-import exceptions.DeleteException;
-import exceptions.UpdateException;
+import java.util.Date;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.MediaType;
+import javax.persistence.TemporalType;
 
 /**
  *
  * @author Roke
  */
 @Stateless
-public class EJBContentManager {
+public class EJBContentManager implements ContentInterface {
 
+    @PersistenceContext(unitName = "BloomingWebPU")
+    private EntityManager em;
+
+    @Override
+    public void createContent(Content content) {
+        em.persist(content);
+    }
+
+    @Override
+    public void updateContent(Content content) {
+        if (!em.contains(content)) {
+            em.merge(content);
+        }
+        em.flush();
+    }
+
+    @Override
+    public void removeContent(Content content) {
+        em.remove(em.merge(content));
+    }
+
+    @Override
+    public List<Content> findContentByName(String name) {
+        List<Content> contents;
+        contents = em.createNamedQuery("findContentByName").setParameter("contentName", name).getResultList();
+
+        return contents;
+    }
+
+    @Override
+    public List<Content> findAllContents() {
+        List<Content> contents;
+        contents = em.createNamedQuery("findAllContents").getResultList();
+        return contents;
+    }
+
+    @Override
+    public List<Content> findContentByDate(Date uploadDate) {
+        List<Content> contents;
+        contents = em.createNamedQuery("findContentByDate").setParameter("date", uploadDate).getResultList();
+        return contents;
+    }
+
+    /* @Override
+    public List<Content> findContentByAlbum(Integer idAlbum) {
+        List<Content> contents;
+        contents = em.createNamedQuery("findContentByAlbum").setParameter("albumId", idAlbum).getResultList();
+        return contents;
+    }*/
 }

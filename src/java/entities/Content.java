@@ -6,7 +6,6 @@
 package entities;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
@@ -31,7 +30,7 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @NamedQueries({
     @NamedQuery(
-            name = "findAllContent", query = "SELECT c FROM Content c"
+            name = "findAllContents", query = "SELECT c FROM Content c"
     )
     ,
         @NamedQuery(
