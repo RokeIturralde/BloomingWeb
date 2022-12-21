@@ -50,9 +50,8 @@ public class ContentFacadeREST {
     }
 
     @PUT
-    @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Integer id, Content entity) {
+    public void edit(Content entity) {
         try {
             ejbC.updateContent(entity);
         } catch (UpdateException ex) {
@@ -60,13 +59,26 @@ public class ContentFacadeREST {
         }
     }
 
-    @DELETE
-    @Path("{id}")
+    /* @DELETE
+    @Path("deleteContent/{content}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void remove(Content content) {
+    public void remove(@PathParam("content") Content content) {
         try {
             ejbC.removeContent(content);
         } catch (DeleteException ex) {
+            Logger.getLogger(ContentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+     */
+    @DELETE
+    @Path("deleteContent/{content}")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void remove(@PathParam("id") Integer id) {
+        try {
+            ejbC.removeContent(ejbC.findContentById(id));
+        } catch (DeleteException ex) {
+            Logger.getLogger(ContentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (FindContentException ex) {
             Logger.getLogger(ContentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -115,7 +127,6 @@ public class ContentFacadeREST {
     public List<Content> findContentByDate(@PathParam("date") String stringDate) {
         List<Content> contents = null;
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-
         try {
             Date date = format.parse(stringDate);
             contents = ejbC.findContentByDate(date);

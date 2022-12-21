@@ -71,7 +71,8 @@ public class EJBContentManager implements ContentInterface {
     @Override
     public void removeContent(Content content) throws DeleteException {
         try {
-            em.remove(em.merge(content));
+            //em.remove(em.merge(content));
+            em.remove(content);
         } catch (Exception e) {
             throw new DeleteException(e.getMessage());
         }
