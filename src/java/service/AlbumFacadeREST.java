@@ -6,7 +6,6 @@
 package service;
 
 import entities.Album;
-import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -62,7 +61,7 @@ public class AlbumFacadeREST extends AbstractFacade<Album> {
         return super.find(id);
     }
 
-    @GET
+    /*@GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Album> findAll() {
@@ -74,7 +73,7 @@ public class AlbumFacadeREST extends AbstractFacade<Album> {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Album> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
-    }
+    }*/
 
     @GET
     @Path("count")
@@ -86,6 +85,5 @@ public class AlbumFacadeREST extends AbstractFacade<Album> {
     @Override
     protected EntityManager getEntityManager() {
         return em;
-    }
-    
+    } 
 }
