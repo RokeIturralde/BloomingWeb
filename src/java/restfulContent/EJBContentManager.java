@@ -6,12 +6,16 @@
 package restfulContent;
 
 import entities.Content;
+import exceptions.CreateException;
+import exceptions.DeleteException;
+import exceptions.FindAllException;
+import exceptions.FindContentException;
+import exceptions.UpdateException;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TemporalType;
 
 /**
  *
@@ -23,50 +27,138 @@ public class EJBContentManager implements ContentInterface {
     @PersistenceContext(unitName = "BloomingWebPU")
     private EntityManager em;
 
+    /**
+     * Creates a new Content
+     *
+     * @param content
+     * @throws CreateException
+     */
     @Override
-    public void createContent(Content content) {
-        em.persist(content);
-    }
-
-    @Override
-    public void updateContent(Content content) {
-        if (!em.contains(content)) {
-            em.merge(content);
+    public void createContent(Content content) throws CreateException {
+        try {
+            em.persist(content);
+        } catch (Exception e) {
+            throw new CreateException(e.getMessage());
         }
-        em.flush();
+
     }
 
+    /**
+     * Updates a Content
+     *
+     * @param content
+     * @throws UpdateException
+     */
     @Override
-    public void removeContent(Content content) {
-        em.remove(em.merge(content));
+    public void updateContent(Content content) throws UpdateException {
+        try {
+            if (!em.contains(content)) {
+                em.merge(content);
+            }
+            em.flush();
+        } catch (Exception e) {
+            throw new UpdateException(e.getMessage());
+        }
+
     }
 
+    /**
+     * Deletes a Content
+     *
+     * @param content
+     * @throws DeleteException
+     */
     @Override
-    public List<Content> findContentByName(String name) {
+    public void removeContent(Content content) throws DeleteException {
+        try {
+            em.remove(em.merge(content));
+        } catch (Exception e) {
+            throw new DeleteException(e.getMessage());
+        }
+
+    }
+
+    /**
+     * Finds Content by the given name
+     *
+     * @param name the String you want to find
+     * @return a List of Contents that matched
+     * @throws FindContentException
+     */
+    @Override
+    public List<Content> findContentByName(String name) throws FindContentException {
         List<Content> contents;
-        contents = em.createNamedQuery("findContentByName").setParameter("contentName", name).getResultList();
+        try {
+            contents = em.createNamedQuery("findContentByName").setParameter("contentName", name).getResultList();
 
-        return contents;
+            return contents;
+        } catch (Exception e) {
+            throw new FindContentException(e.getMessage());
+        }
+
     }
 
+    /**
+     * Finds all the Content (Just for testing)
+     *
+     * @return all the Content
+     * @throws FindAllException
+     */
     @Override
-    public List<Content> findAllContents() {
+    public List<Content> findAllContents() throws FindAllException {
         List<Content> contents;
+        try {
+
+        } catch (Exception e) {
+            throw new FindAllException(e.getMessage());
+        }
         contents = em.createNamedQuery("findAllContents").getResultList();
         return contents;
     }
 
+    /**
+     * Finds Content by Date
+     *
+     * @param uploadDate
+     * @return a list of matched Contents
+     * @throws FindContentException
+     */
     @Override
-    public List<Content> findContentByDate(Date uploadDate) {
+    public List<Content> findContentByDate(Date uploadDate) throws FindContentException {
         List<Content> contents;
-        contents = em.createNamedQuery("findContentByDate").setParameter("date", uploadDate).getResultList();
-        return contents;
+        try {
+            contents = em.createNamedQuery("findContentByDate").setParameter("date", uploadDate).getResultList();
+            return contents;
+        } catch (Exception e) {
+            throw new FindContentException(e.getMessage());
+        }
+
     }
 
     /* @Override
-    public List<Content> findContentByAlbum(Integer idAlbum) {
+    public List<Content> findContentByAlbum(Integer idAlbum) throws FindContentException{
         List<Content> contents;
-        contents = em.createNamedQuery("findContentByAlbum").setParameter("albumId", idAlbum).getResultList();
-        return contents;
+    try{
+    contents = em.createNamedQuery("findContentByAlbum").setParameter("albumId", idAlbum).getResultList();
+        return contents;}catch(Exception e){
+    throw new FindContentException(e.getMessage());}
+        
     }*/
+    /**
+     * Finds Content by their Id
+     *
+     * @param contentId
+     * @return the Content with that ID
+     * @throws FindContentException
+     */
+    @Override
+    public Content findContentById(Integer contentId) throws FindContentException {
+        Content content = null;
+        try {
+            content = em.find(Content.class, contentId);
+        } catch (Exception e) {
+            throw new FindContentException(e.getMessage());
+        }
+        return content;
+    }
 }

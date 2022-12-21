@@ -6,10 +6,17 @@
 package service;
 
 import entities.Content;
+import exceptions.CreateException;
+import exceptions.DeleteException;
 import exceptions.FindAllException;
 import exceptions.FindContentException;
+import exceptions.UpdateException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -35,61 +42,93 @@ public class ContentFacadeREST {
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(Content entity) {
-        ejbC.createContent(entity);
+        try {
+            ejbC.createContent(entity);
+        } catch (CreateException ex) {
+            Logger.getLogger(ContentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void edit(@PathParam("id") Integer id, Content entity) {
-        ejbC.updateContent(entity);
+        try {
+            ejbC.updateContent(entity);
+        } catch (UpdateException ex) {
+            Logger.getLogger(ContentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @DELETE
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void remove(Content content) {
-        ejbC.removeContent(content);
+        try {
+            ejbC.removeContent(content);
+        } catch (DeleteException ex) {
+            Logger.getLogger(ContentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @GET
+    @Path("{id}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Content findContentById(@PathParam("id") Integer contentId, Content entity) {
+        Content content = null;
+        try {
+            content = ejbC.findContentById(contentId);
+        } catch (FindContentException ex) {
+            Logger.getLogger(ContentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return content;
     }
 
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Content> findAllContents() throws FindAllException {
-        List<Content> contents;
+    public List<Content> findAllContents() {
+        List<Content> contents = null;
         try {
             contents = ejbC.findAllContents();
-        } catch (Exception e) {
-            throw new FindAllException(e.getMessage());
-
+        } catch (FindAllException ex) {
+            Logger.getLogger(ContentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
         return contents;
     }
 
     @GET
-    @Path("{name}")
+    @Path("findByName/{name}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Content> findContentByName(@PathParam("name") String name) throws FindContentException {
+    public List<Content> findContentByName(@PathParam("name") String name) {
+        List<Content> contents = null;
         try {
-            return ejbC.findContentByName(name);
-        } catch (Exception e) {
-            throw new FindContentException(e.getMessage());
-
+            contents = ejbC.findContentByName(name);
+        } catch (FindContentException ex) {
+            Logger.getLogger(ContentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return contents;
     }
 
     @GET
-    @Path("/findByDate/{date}")
+    @Path("date/{date}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Content> findContentByDate(@PathParam("date") Date date) throws FindContentException {
+    public List<Content> findContentByDate(@PathParam("date") String stringDate) {
+        List<Content> contents = null;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
         try {
-            return ejbC.findContentByDate(date);
-        } catch (Exception e) {
-            throw new FindContentException(e.getMessage());
+            Date date = format.parse(stringDate);
+            contents = ejbC.findContentByDate(date);
+        } catch (FindContentException ex) {
+            Logger.getLogger(ContentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(ContentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return contents;
     }
 
     /*@GET
-    @Path("{albumId}")
+    @Path("{/findByAlbum/albumId}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Content> findContentByAlbum(@PathParam("albumId") Integer idAlbum) throws FindContentException {
         try {
