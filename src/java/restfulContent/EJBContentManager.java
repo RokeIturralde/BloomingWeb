@@ -6,6 +6,8 @@
 package restfulContent;
 
 import entities.Content;
+import entities.CustomImage;
+import entities.CustomText;
 import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.FindAllException;
@@ -63,20 +65,18 @@ public class EJBContentManager implements ContentInterface {
     }
 
     /**
-     * Deletes a Content
+     * Delete a Content by their ID
      *
-     * @param content
+     * @param contentId
      * @throws DeleteException
      */
     @Override
-    public void removeContent(Content content) throws DeleteException {
+    public void removeContent(Integer contentId) throws DeleteException {
         try {
-            //em.remove(em.merge(content));
-            em.remove(content);
+            em.remove(em.merge(em.find(Content.class, contentId)));
         } catch (Exception e) {
             throw new DeleteException(e.getMessage());
         }
-
     }
 
     /**
@@ -136,15 +136,18 @@ public class EJBContentManager implements ContentInterface {
 
     }
 
-    /* @Override
-    public List<Content> findContentByAlbum(Integer idAlbum) throws FindContentException{
+    @Override
+    public List<Content> findContentByAlbum(Integer idAlbum) throws FindContentException {
         List<Content> contents;
-    try{
-    contents = em.createNamedQuery("findContentByAlbum").setParameter("albumId", idAlbum).getResultList();
-        return contents;}catch(Exception e){
-    throw new FindContentException(e.getMessage());}
-        
-    }*/
+        try {
+            contents = em.createNamedQuery("findContentByAlbum").setParameter("albumId", idAlbum).getResultList();
+            return contents;
+        } catch (Exception e) {
+            throw new FindContentException(e.getMessage());
+        }
+
+    }
+
     /**
      * Finds Content by their Id
      *
@@ -161,5 +164,59 @@ public class EJBContentManager implements ContentInterface {
             throw new FindContentException(e.getMessage());
         }
         return content;
+    }
+
+    /**
+     * Updates a CustomImage
+     *
+     * @param customImage
+     * @throws UpdateException
+     */
+    @Override
+    public void updateCustomImage(CustomImage customImage) throws UpdateException {
+        try {
+            if (!em.contains(customImage)) {
+                em.merge(customImage);
+            }
+            em.flush();
+        } catch (Exception e) {
+            throw new UpdateException(e.getMessage());
+        }
+    }
+
+    /**
+     * Updates a CustomText
+     *
+     * @param customText
+     * @throws UpdateException
+     */
+    @Override
+    public void updateCustomText(CustomText customText) throws UpdateException {
+        try {
+            if (!em.contains(customText)) {
+                em.merge(customText);
+            }
+            em.flush();
+        } catch (Exception e) {
+            throw new UpdateException(e.getMessage());
+        }
+    }
+
+    /**
+     * Finds a CustomText by ID
+     *
+     * @param contentId
+     * @return
+     * @throws FindContentException
+     */
+    @Override
+    public CustomText findCustomTextById(Integer contentId) throws FindContentException {
+        CustomText customText = null;
+        try {
+            customText = em.find(CustomText.class, contentId);
+        } catch (Exception e) {
+            throw new FindContentException(e.getMessage());
+        }
+        return customText;
     }
 }

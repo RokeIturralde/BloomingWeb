@@ -18,9 +18,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -39,13 +41,16 @@ public class ContentFacadeREST {
     @EJB
     private ContentInterface ejbC;
 
+    private Logger LOGGER = Logger.getLogger(ContentFacadeREST.class.getName());
+
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(Content entity) {
         try {
             ejbC.createContent(entity);
         } catch (CreateException ex) {
-            Logger.getLogger(ContentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
     }
 
@@ -55,7 +60,8 @@ public class ContentFacadeREST {
         try {
             ejbC.updateContent(entity);
         } catch (UpdateException ex) {
-            Logger.getLogger(ContentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
     }
 
@@ -71,27 +77,26 @@ public class ContentFacadeREST {
     }
      */
     @DELETE
-    @Path("deleteContent/{content}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Path("{id}")
     public void remove(@PathParam("id") Integer id) {
         try {
-            ejbC.removeContent(ejbC.findContentById(id));
+            ejbC.removeContent(id);
         } catch (DeleteException ex) {
-            Logger.getLogger(ContentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (FindContentException ex) {
-            Logger.getLogger(ContentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getLocalizedMessage());
         }
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Content findContentById(@PathParam("id") Integer contentId, Content entity) {
+    public Content findContentById(@PathParam("id") Integer contentId) {
         Content content = null;
         try {
             content = ejbC.findContentById(contentId);
         } catch (FindContentException ex) {
-            Logger.getLogger(ContentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
         return content;
     }
@@ -103,7 +108,8 @@ public class ContentFacadeREST {
         try {
             contents = ejbC.findAllContents();
         } catch (FindAllException ex) {
-            Logger.getLogger(ContentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
         return contents;
     }
@@ -116,7 +122,8 @@ public class ContentFacadeREST {
         try {
             contents = ejbC.findContentByName(name);
         } catch (FindContentException ex) {
-            Logger.getLogger(ContentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
         return contents;
     }
@@ -131,21 +138,24 @@ public class ContentFacadeREST {
             Date date = format.parse(stringDate);
             contents = ejbC.findContentByDate(date);
         } catch (FindContentException ex) {
-            Logger.getLogger(ContentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         } catch (ParseException ex) {
-            Logger.getLogger(ContentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.severe(ex.getMessage());
+            throw new BadRequestException(ex.getMessage());
         }
         return contents;
     }
 
-    /*@GET
-    @Path("{/findByAlbum/albumId}")
+    @GET
+    @Path("/findByAlbum/{albumId}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Content> findContentByAlbum(@PathParam("albumId") Integer idAlbum) throws FindContentException {
         try {
             return ejbC.findContentByAlbum(idAlbum);
-        } catch (Exception e) {
-            throw new FindContentException(e.getMessage());
+        } catch (FindContentException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
         }
-    }*/
+    }
 }

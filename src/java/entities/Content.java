@@ -8,6 +8,7 @@ package entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -37,10 +38,10 @@ import javax.xml.bind.annotation.XmlTransient;
             name = "findContentByName", query = "SELECT c FROM Content c where c.name=:contentName"
     )
     ,
-/*@NamedQuery(
-            name = "findContentByAlbum", query = "SELECT c FROM Content c, Contents_Albums ca where ca.album_id=:albumId and c.id=ca.content_id"
+@NamedQuery(
+            name = "findContentByAlbum", query = "SELECT c FROM Content c inner join c.albums a where a.id=:albumId"
     )
-    ,*/
+    ,
 @NamedQuery(
             name = "findContentByDate", query = "SELECT c FROM Content c where c.uploadDate=:date"
     )
@@ -58,7 +59,8 @@ public class Content implements Serializable {
     /**
      * Relation containing the list albums that include the Content
      */
-    @ManyToMany(mappedBy = "contents", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "contents", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+
     private List<Album> albums;
     private String name;
     @Temporal(TemporalType.DATE)
