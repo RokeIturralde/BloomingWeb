@@ -46,7 +46,7 @@ import javax.xml.bind.annotation.XmlTransient;
             + "FROM Album a, User u, users us, sharedAlbums sa "
             + "WHERE  us.id = :u.id"
             + "AND sa.id = :id"
-    )*/
+    )*///
     @NamedQuery(
             name = "sharedAlbums", query = "SELECT a "
             + "FROM Album a, User u "
