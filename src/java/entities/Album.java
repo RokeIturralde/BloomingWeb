@@ -36,28 +36,56 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @NamedQueries({
     @NamedQuery(
-            name = "myAlbums", query = "SELECT a "
+            name = "findAlbumByName", query = "SELECT a "
+            + "FROM Album a "
+            + "WHERE a.creator = :creator "
+            + "AND a.name = :name"
+    )
+    ,
+    @NamedQuery(
+            name = "findMyAllAlbums", query = "SELECT a "
             + "FROM Album a, User u "
             + "WHERE u.id = :creator"
     )
     ,
-    /*@NamedQuery(
-            name = "sharedAlbums", query = "SELECT a "
-            + "FROM Album a, User u, users us, sharedAlbums sa "
-            + "WHERE  us.id = :u.id"
-            + "AND sa.id = :id"
-    )*///
     @NamedQuery(
-            name = "sharedAlbums", query = "SELECT a "
+            name = "findMyAlbumsByName", query = "SELECT a "
+            + "FROM Album a, User u "
+            + "WHERE u.id = :creator"
+    )
+    ,
+    @NamedQuery(
+            name = "findMyAlbumsByDate", query = "SELECT a "
+            + "FROM Album a, User u "
+            + "WHERE u.id = :creator"
+    )
+    ,
+    @NamedQuery(
+            name = "findMyAllSharedAlbums", query = "SELECT a "
             + "FROM Album a, User u "
             + "WHERE  a.users = :u.id"
             + "AND u.sharedAlbums = :id"
     )
-    , @NamedQuery(
-            name = "myAlbumsByDate", query = "SELECT a.* "
-                    + "FROM Album a "
-                    + "WHERE "
-                    + "ORDERBY"
+    ,
+    @NamedQuery(
+            name = "findMySharedAlbumsByName", query = "SELECT a.* "
+            + "FROM Album a "
+            + "WHERE "
+            + "ORDERBY"
+    )
+    ,
+    @NamedQuery(
+            name = "findMySharedAlbumsByDate", query = "SELECT a.* "
+            + "FROM Album a "
+            + "WHERE "
+            + "ORDERBY"
+    )
+    ,
+    @NamedQuery(
+            name = "findMySharedAlbumsByCreator", query = "SELECT a.* "
+            + "FROM Album a "
+            + "WHERE "
+            + "ORDERBY"
     )
 
 })
@@ -75,7 +103,7 @@ public class Album implements Serializable {
     private Integer id;
     private String name;
     private String description;
-     /**
+    /**
      * Relation containing the user creator of the Album
      */
     @ManyToOne
@@ -153,7 +181,7 @@ public class Album implements Serializable {
     public void setContents(List<Content> contents) {
         this.contents = contents;
     }
-     
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -176,7 +204,7 @@ public class Album implements Serializable {
 
     @Override
     public String toString() {
-        return "Album["+id+"]-> Name: "+name+", Creator: "+creator+", CreationDate: "+creationDate+", ...";
+        return "Album[" + id + "]-> Name: " + name + ", Creator: " + creator + ", CreationDate: " + creationDate + ", ...";
     }
-    
+
 }

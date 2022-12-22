@@ -55,87 +55,120 @@ public interface AlbumManagerLocal {
      * @throws SharingException Thrown when any error or exception occurs during
      * sharing.
      */
-    public void shareAlbum(Album album, String login) throws SharingException;
+    public void shareAnAlbum(Album album, String login) throws SharingException;
 
     /**
+     * The method finds an album which id is equals the id the User introduce
+     * for a new album.
      *
-     * @param album An Album entity object containing Album data.
-     * @param user
-     * @return
+     * @param id An Integer that contains the id the user introduce
+     * @return The Album entity object to be found.
+     * @throws ReadException
+     */
+    public Album findAlbumByID(Integer id) throws ReadException;
+
+    /**
+     * The method finds an album which name is equals the name the User
+     * introduce for a new album.
+     *
+     * @param name
+     * @return The Album entity object to be found.
+     * @throws ReadException
+     */
+    public Album findAlbumByName(String name) throws ReadException;
+
+    /**
+     * The method finds all the albums where the User is the creator
+     *
+     * @param user The User Entity Object containing User data from the user who
+     * is logged to de app.
+     * @return An ArrayList of Albums that contains the albums that the method
+     * found.
      * @throws ReadException Thrown when any error or exception occurs during
      * reading.
      */
-    public ArrayList<Album> findMyAllAlbums(Album album, User user) throws ReadException;
+    public ArrayList<Album> findMyAllAlbums(User user) throws ReadException;
 
     /**
-     * This method finds all the albums that the name contains the words the
-     * user introduce and the user is the creator.
+     * This method finds all the albums created by user that the name contains
+     * the words the user introduced.
      *
-     * @param album An Album entity object containing Album data.
-     * @param user A User entity object containing User data.
+     * @param user The User Entity Object containing User data from the user who
+     * is logged to de app.
      * @param name A String that contains the words the user introduced.
      * @return An ArrayList of Albums that contains the albums that the method
      * found.
      * @throws ReadException Thrown when any error or exception occurs during
      * reading.
      */
-    public ArrayList<Album> findAlbumsByName(Album album, User user, String name) throws ReadException;
+    public ArrayList<Album> findMyAlbumsByName(User user, String name) throws ReadException;
 
     /**
-     * This method finds all the albums that the date of creation is the date
-     * that the user introduce
+     * This method finds all the albums created by user that the date of
+     * creation is equals the date the user introduced.
      *
-     * @param album An Album entity object containing Album data
-     * @param user
-     * @param date
-     * @return
+     * @param user The User Entity Object containing User data from the user who
+     * is logged to de app.
+     * @param date A Date that contains the date the User introduce.
+     * @return An ArrayList of Albums that contains the albums that the method
+     * found.
      * @throws ReadException Thrown when any error or exception occurs during
      * reading.
      */
-    public ArrayList<Album> findAlbumsByDate(Album album, User user, Date date) throws ReadException;
+    public ArrayList<Album> findMyAlbumsByDate(User user, Date date) throws ReadException;
 
     /**
-     * This method finds all the albums that the name contains the words the
-     * user introduce and someone shared to the user
+     * The method finds all the albums that where shared to user
      *
-     * @param album An Album entity object containing Album data
-     * @param user
-     * @return
+     * @param user The User Entity Object containing User data from the user who
+     * is logged to de app.
+     * @return An ArrayList of Albums that contains the albums that the method
+     * found.
      * @throws ReadException Thrown when any error or exception occurs during
      * reading.
      */
-    public ArrayList<Album> findMyAllSharedAlbums(Album album, User user) throws ReadException;
+    public ArrayList<Album> findMyAllSharedAlbums(User user) throws ReadException;
 
     /**
+     * This method finds all the shared albums that the name contains the words
+     * the user introduce.
      *
-     * @param album An Album entity object containing Album data
-     * @param user
-     * @param name
-     * @return
+     * @param user The User Entity Object containing User data from the user who
+     * is logged to de app.
+     * @param name A String that contains the words the user introduced.
+     * @return An ArrayList of Albums that contains the albums that the method
+     * found.
      * @throws ReadException Thrown when any error or exception occurs during
      * reading.
      */
-    public ArrayList<Album> findSharedAlbumsByName(Album album, User user, String name) throws ReadException;
+    public ArrayList<Album> findMySharedAlbumsByName(User user, String name) throws ReadException;
 
     /**
+     * This method finds all the shared albums that the date of creation is
+     * equals the date the user introduced.
      *
-     * @param album An Album entity object containing Album data
-     * @param user
-     * @param date
-     * @return
+     * @param user The User Entity Object containing User data from the user who
+     * is logged to de app.
+     * @param date A Date that contains the date the User introduce.
+     * @return An ArrayList of Albums that contains the albums that the method
+     * found.
      * @throws ReadException Thrown when any error or exception occurs during
      * reading.
      */
-    public ArrayList<Album> findSharedAlbumsByDate(Album album, User user, Date date) throws ReadException;
+    public ArrayList<Album> findMySharedAlbumsByDate(User user, Date date) throws ReadException;
 
     /**
+     * This method finds all the shared albums that the login contains the words
+     * the user introduce.
      *
-     * @param album An Album entity object containing Album data
-     * @param user
-     * @return
+     * @param user The User Entity Object containing User data from the user who
+     * is logged to de app.
+     * @param login A String that contains the words the user introduced.
+     * @return An ArrayList of Albums that contains the albums that the method
+     * found.
      * @throws ReadException Thrown when any error or exception occurs during
      * reading.
      */
-    public ArrayList<Album> findSharedAlbumsByCreator(Album album, User user) throws ReadException;
+    public ArrayList<Album> findMySharedAlbumsByCreator(User user, String login) throws ReadException;
 
 }
