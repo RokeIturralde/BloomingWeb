@@ -19,6 +19,8 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -27,9 +29,31 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- *
- * @author 2dam
+ * @author dani
  */
+
+ @NamedQueries({
+    @NamedQuery(
+        name = "findUserByEmail",
+        query = "SELECT u FROM user u WHERE u.email = :email"
+    )
+    ,
+    @NamedQuery(
+        name = "findUserByName",
+        query = "SELECT u FROM user u WHERE u.name = :name"
+    )
+    ,
+    @NamedQuery(
+        name = "findUserByStatus",
+        query = "SELECT u FROM user u WHERE u.status = :status"
+    )
+    ,
+    @NamedQuery(
+        name = "findUserByPrivilege",
+        query = "SELECT u FROM user u WHERE u.privilege = :privilege"
+    )
+ })
+
 @Entity
 @Table(name = "user", schema = "bloomingdb")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -38,11 +62,10 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private String login;
+
     private String email;
     private String fullName;
-    private String login;
     private String password;
     @Enumerated(EnumType.STRING)
     private Privilege privilege;
@@ -79,14 +102,6 @@ public class User implements Serializable {
 
     public void setSharedAlbums(List<Album> sharedAlbums) {
         this.sharedAlbums = sharedAlbums;
-    }
-
-    public Integer getIdUser() {
-        return id;
-    }
-
-    public void setIdUser(Integer idUser) {
-        this.id = idUser;
     }
 
     public String getEmail() {
@@ -148,7 +163,7 @@ public class User implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (login != null ? login.hashCode() : 0);
         return hash;
     }
 
@@ -159,7 +174,7 @@ public class User implements Serializable {
             return false;
         }
         User other = (User) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.login == null && other.login != null) || (this.login != null && !this.login.equals(other.login))) {
             return false;
         }
         return true;
@@ -167,7 +182,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.User[ id=" + id + " ]";
+        return "entities.User[ login=" + login + " ]";
     }
 
 }
