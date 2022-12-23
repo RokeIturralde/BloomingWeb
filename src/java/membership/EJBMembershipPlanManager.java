@@ -66,7 +66,6 @@ public class EJBMembershipPlanManager implements MembershipPlanInterface{
         } catch (Exception e){
             throw new FindPlanException(e.getMessage());
         }
-        
     }
 
     @Override

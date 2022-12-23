@@ -26,9 +26,9 @@ import javax.xml.bind.annotation.XmlTransient;
         @NamedQuery(
             name="findAllPlans", query="SELECT M FROM MembershipPlan M"),
         @NamedQuery(
-            name="getPlansByPrice", query="SELECT M FROM MembershipPlan M WHERE M.price<=planPrice"),
+            name="findPlanByPrice", query="SELECT M FROM MembershipPlan M WHERE M.price<=:planPrice"),
         @NamedQuery(
-            name="findPlanByDuration", query="SELECT M FROM MembershipPlan M WHERE M.duration>=:planDuration"),
+            name="findPlanByDuration", query="SELECT M FROM MembershipPlan M WHERE M.duration=:planDuration"),
         @NamedQuery(
             name="findPlanByName", query="SELECT M FROM MembershipPlan M WHERE M.name=:planName"),
         @NamedQuery(

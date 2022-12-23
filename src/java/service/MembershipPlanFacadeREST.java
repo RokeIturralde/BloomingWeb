@@ -140,7 +140,7 @@ public class MembershipPlanFacadeREST {
     @GET
     @Path("duration/{duration}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<MembershipPlan> findPlanByDuration(String duration) {
+    public List<MembershipPlan> findPlanByDuration(@PathParam("duration") String duration) {
         List<MembershipPlan> plans = null;
         try{
             plans = ejbM.findPlanByDuration(duration);
@@ -158,7 +158,7 @@ public class MembershipPlanFacadeREST {
     @GET
     @Path("price/{price}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<MembershipPlan> findPlanByPrice(float price) {
+    public List<MembershipPlan> findPlanByPrice(@PathParam("price") Float price) {
         List<MembershipPlan> plans = null;
         try{
             plans = ejbM.findPlanByPrice(price);
