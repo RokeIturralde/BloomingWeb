@@ -64,18 +64,6 @@ public class ContentFacadeREST {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
-
-    /* @DELETE
-    @Path("deleteContent/{content}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void remove(@PathParam("content") Content content) {
-        try {
-            ejbC.removeContent(content);
-        } catch (DeleteException ex) {
-            Logger.getLogger(ContentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-     */
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Integer id) {

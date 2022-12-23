@@ -219,4 +219,35 @@ public class EJBContentManager implements ContentInterface {
         }
         return customText;
     }
+    
+    @Override
+    public void createCustomText(CustomText content) throws CreateException {
+        try {
+            em.persist(content);
+        } catch (Exception e) {
+            throw new CreateException(e.getMessage());
+        }
+
+    }
+    
+    @Override
+    public void createCustomImage(CustomImage content) throws CreateException {
+        try {
+            em.persist(content);
+        } catch (Exception e) {
+            throw new CreateException(e.getMessage());
+        }
+
+    }
+    
+    @Override
+    public CustomImage findCustomImageById(Integer contentId) throws FindContentException {
+        CustomImage customImage = null;
+        try {
+            customImage = em.find(CustomImage.class, contentId);
+        } catch (Exception e) {
+            throw new FindContentException(e.getMessage());
+        }
+        return customImage;
+    }
 }

@@ -6,6 +6,7 @@
 package service;
 
 import entities.CustomText;
+import exceptions.CreateException;
 import exceptions.FindContentException;
 import exceptions.UpdateException;
 import java.util.logging.Logger;
@@ -13,6 +14,7 @@ import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -55,5 +57,16 @@ public class CustomTextFacadeREST {
             throw new InternalServerErrorException(ex.getMessage());
         }
         return customText;
+    }
+
+    @POST
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void create(CustomText entity) {
+        try {
+            ejbC.createCustomText(entity);
+        } catch (CreateException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        }
     }
 }

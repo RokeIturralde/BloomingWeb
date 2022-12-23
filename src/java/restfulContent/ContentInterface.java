@@ -37,10 +37,16 @@ public interface ContentInterface {
     public List<Content> findContentByDate(Date uploadDate) throws FindContentException;
 
     public List<Content> findContentByAlbum(Integer idAlbum) throws FindContentException;
-    
+
     public void updateCustomImage(CustomImage customImage) throws UpdateException;
-    
+
     public void updateCustomText(CustomText customText) throws UpdateException;
 
     public CustomText findCustomTextById(Integer contentId) throws FindContentException;
+
+    public void createCustomText(CustomText content) throws CreateException;
+
+    public void createCustomImage(CustomImage content) throws CreateException;
+
+    public CustomImage findCustomImageById(Integer contentId) throws FindContentException;
 }
