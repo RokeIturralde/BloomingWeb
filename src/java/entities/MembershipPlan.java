@@ -11,6 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -20,6 +22,19 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author 2dam
  */
+@NamedQueries({
+        @NamedQuery(
+            name="findAllPlans", query="SELECT M FROM MembershipPlan M"),
+        @NamedQuery(
+            name="findPlanByPrice", query="SELECT M FROM MembershipPlan M WHERE M.price<=:planPrice"),
+        @NamedQuery(
+            name="findPlanByDuration", query="SELECT M FROM MembershipPlan M WHERE M.duration=:planDuration"),
+        @NamedQuery(
+            name="findPlanByName", query="SELECT M FROM MembershipPlan M WHERE M.name=:planName"),
+        @NamedQuery(
+            name="findPlanById", query="SELECT M FROM MembershipPlan M WHERE M.id=:id")
+    })
+
 @Entity
 @Table(name = "membershipPlan", schema = "bloomingdb")
 @XmlRootElement
@@ -130,5 +145,9 @@ public class MembershipPlan implements Serializable {
     public String toString() {
         return "entities.MembershipPlan[ id=" + id + " ]";
     }
+    
+    
+    
+    
 
 }
