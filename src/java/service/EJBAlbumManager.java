@@ -16,7 +16,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import org.hibernate.jpa.internal.EntityManagerImpl;
 
 /**
  * This is the stateless EJB that implements the AlbumManagerLocal interface for
@@ -31,7 +30,7 @@ public class EJBAlbumManager implements AlbumManagerLocal {
     /**
      * EntityManager for DataModelExamplePU persistence unit.
      */
-    @PersistenceContext(unitName = "DataModelExamplePU")
+    @PersistenceContext(unitName = "BloomingWebPU")
     private EntityManager em;
 
     /**
@@ -49,7 +48,7 @@ public class EJBAlbumManager implements AlbumManagerLocal {
             User creator = album.getCreator();
             em.createNamedQuery("findAlbumByName").setParameter("creator", creator).setParameter("name", album.getName()).getSingleResult();
 
-            throw new CreateException("Ya esta el nombre en uso");
+            throw new CreateException("You already have an album with that name");
 
         } catch (NoResultException n) {
             em.persist(album);
@@ -114,20 +113,21 @@ public class EJBAlbumManager implements AlbumManagerLocal {
     }
 
     /**
-     * The method finds an album which name is equals the name the User
-     * introduce for a new album.
+     * The method finds an album which id is equals the id the User introduce
+     * for a new album.
      *
-     * @param name
+     * @param id An Integer that contains the id the user introduce.
      * @return The Album entity object to be found.
-     * @throws ReadException
+     * @throws ReadException Thrown when any error or exception occurs during
+     * reading.
      */
     @Override
-    public Album findAlbumByName(String name) throws ReadException {
+    public Album findAlbumByID(Integer id) throws ReadException {
         Album album = null;
         try {
-            album = (Album) em.createNamedQuery("findAlbumByName").getSingleResult();
+            album = (Album) em.createNamedQuery("findAlbumByID").setParameter("albumId", id).getSingleResult();
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "AlbumEJB ->  findAlbumByName(String name) {0}", e.getMessage());
+            LOGGER.log(Level.SEVERE, "AlbumEJB ->  findAlbumByID(Integer id) {0}", e.getMessage());
         }
         return album;
     }
@@ -135,19 +135,20 @@ public class EJBAlbumManager implements AlbumManagerLocal {
     /**
      * The method finds all the albums where the User is the creator
      *
-     * @param user The User Entity Object containing User data from the user who
-     * is logged to de app.
+     * @param userLogin a string with the login from the user who is logged to
+     * de app.
      * @return An ArrayList of Albums that contains the albums that the method
      * found.
      * @throws ReadException Thrown when any error or exception occurs during
      * reading.
      */
     @Override
-    public ArrayList<Album> findMyAllAlbums(User user) throws ReadException {
+    public ArrayList<Album> findMyAllAlbums(String userLogin) throws ReadException {
         ArrayList<Album> myAlbums = null;
+        User user;
         try {
-
-            myAlbums = new ArrayList<>(em.createNamedQuery("findMyAllAlbums").getResultList());
+            user = em.find(User.class, userLogin);
+            myAlbums = new ArrayList<>(em.createNamedQuery("findMyAllAlbums").setParameter("creator", user).getResultList());
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "AlbumEJB ->  findMyAllAlbums(User user) {0}", e.getMessage());
         }
@@ -158,8 +159,8 @@ public class EJBAlbumManager implements AlbumManagerLocal {
      * This method finds all the albums created by user that the name contains
      * the words the user introduced.
      *
-     * @param user The User Entity Object containing User data from the user who
-     * is logged to de app.
+     * @param userLogin a string with the login from the user who is logged to
+     * de app.
      * @param name A String that contains the words the user introduced.
      * @return An ArrayList of Albums that contains the albums that the method
      * found.
@@ -167,11 +168,12 @@ public class EJBAlbumManager implements AlbumManagerLocal {
      * reading.
      */
     @Override
-    public ArrayList<Album> findMyAlbumsByName(User user, String name) throws ReadException {
+    public ArrayList<Album> findMyAlbumsByName(String userLogin, String name) throws ReadException {
         ArrayList<Album> myAlbums = null;
+        User user;
         try {
-
-            myAlbums = new ArrayList<>(em.createNamedQuery("findMyAlbumsByName").getResultList());
+            user = em.find(User.class, userLogin);
+            myAlbums = new ArrayList<>(em.createNamedQuery("findMyAlbumsByName").setParameter("creator", user).setParameter("name", name).getResultList());
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "AlbumEJB ->  findMyAlbumsByName(User user, String name) {0}", e.getMessage());
         }
@@ -182,8 +184,8 @@ public class EJBAlbumManager implements AlbumManagerLocal {
      * This method finds all the albums created by user that the date of
      * creation is equals the date the user introduced.
      *
-     * @param user The User Entity Object containing User data from the user who
-     * is logged to de app.
+     * @param userLogin a string with the login from the user who is logged to
+     * de app.
      * @param date A Date that contains the date the User introduce.
      * @return An ArrayList of Albums that contains the albums that the method
      * found.
@@ -191,11 +193,12 @@ public class EJBAlbumManager implements AlbumManagerLocal {
      * reading.
      */
     @Override
-    public ArrayList<Album> findMyAlbumsByDate(User user, Date date) throws ReadException {
+    public ArrayList<Album> findMyAlbumsByDate(String userLogin, Date date) throws ReadException {
         ArrayList<Album> myAlbums = null;
+        User user;
         try {
-
-            myAlbums = new ArrayList<>(em.createNamedQuery("findMyAlbumsByDate").getResultList());
+            user = em.find(User.class, userLogin);
+            myAlbums = new ArrayList<>(em.createNamedQuery("findMyAlbumsByDate").setParameter("creator", user).setParameter("date", date).getResultList());
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "AlbumEJB ->  findMyAlbumsByDate(User user, Date date) {0}", e.getMessage());
         }
@@ -205,18 +208,20 @@ public class EJBAlbumManager implements AlbumManagerLocal {
     /**
      * The method finds all the albums that where shared to user
      *
-     * @param user The User Entity Object containing User data from the user who
-     * is logged to de app.
+     * @param userLogin a string with the login from the user who is logged to
+     * de app.
      * @return An ArrayList of Albums that contains the albums that the method
      * found.
      * @throws ReadException Thrown when any error or exception occurs during
      * reading.
      */
     @Override
-    public ArrayList<Album> findMyAllSharedAlbums(User user) throws ReadException {
+    public ArrayList<Album> findMyAllSharedAlbums(String userLogin) throws ReadException {
         ArrayList<Album> sharedAlbums = null;
+        User user;
         try {
-            sharedAlbums = new ArrayList<>(em.createNamedQuery("findMyAllSharedAlbums").getResultList());
+            user = em.find(User.class, userLogin);
+            sharedAlbums = new ArrayList<>(em.createNamedQuery("findMyAllSharedAlbums").setParameter("user", user).setParameter("userLogin", user.getLogin()).getResultList());
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "AlbumEJB ->  findMyAllSharedAlbums(User user) {0}", e.getMessage());
         }
@@ -227,8 +232,8 @@ public class EJBAlbumManager implements AlbumManagerLocal {
      * This method finds all the shared albums that the name contains the words
      * the user introduce.
      *
-     * @param user The User Entity Object containing User data from the user who
-     * is logged to de app.
+     * @param userLogin a string with the login from the user who is logged to
+     * de app.
      * @param name A String that contains the words the user introduced.
      * @return An ArrayList of Albums that contains the albums that the method
      * found.
@@ -236,10 +241,12 @@ public class EJBAlbumManager implements AlbumManagerLocal {
      * reading.
      */
     @Override
-    public ArrayList<Album> findMySharedAlbumsByName(User user, String name) throws ReadException {
+    public ArrayList<Album> findMySharedAlbumsByName(String userLogin, String name) throws ReadException {
         ArrayList<Album> sharedAlbums = null;
+        User user;
         try {
-            sharedAlbums = new ArrayList<>(em.createNamedQuery("findMySharedAlbumsByName").getResultList());
+            user = em.find(User.class, userLogin);
+            sharedAlbums = new ArrayList<>(em.createNamedQuery("findMySharedAlbumsByName").setParameter("user", user).setParameter("userLogin", user.getLogin()).setParameter("name", name).getResultList());
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "AlbumEJB ->  findMySharedAlbumsByName(User user, String name) {0}", e.getMessage());
         }
@@ -250,8 +257,8 @@ public class EJBAlbumManager implements AlbumManagerLocal {
      * This method finds all the shared albums that the date of creation is
      * equals the date the user introduced.
      *
-     * @param user The User Entity Object containing User data from the user who
-     * is logged to de app.
+     * @param userLogin a string with the login from the user who is logged to
+     * de app.
      * @param date A Date that contains the date the User introduce.
      * @return An ArrayList of Albums that contains the albums that the method
      * found.
@@ -259,10 +266,12 @@ public class EJBAlbumManager implements AlbumManagerLocal {
      * reading.
      */
     @Override
-    public ArrayList<Album> findMySharedAlbumsByDate(User user, Date date) throws ReadException {
+    public ArrayList<Album> findMySharedAlbumsByDate(String userLogin, Date date) throws ReadException {
         ArrayList<Album> sharedAlbums = null;
+        User user;
         try {
-            sharedAlbums = new ArrayList<>(em.createNamedQuery("findMySharedAlbumsByDate").getResultList());
+            user = em.find(User.class, userLogin);
+            sharedAlbums = new ArrayList<>(em.createNamedQuery("findMySharedAlbumsByDate").setParameter("user", user).setParameter("userLogin", user.getLogin()).setParameter("date", date).getResultList());
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "AlbumEJB ->  findMySharedAlbumsByDate(User user, Date date) {0}", e.getMessage());
         }
@@ -273,27 +282,44 @@ public class EJBAlbumManager implements AlbumManagerLocal {
      * This method finds all the shared albums that the login contains the words
      * the user introduce.
      *
-     * @param user The User Entity Object containing User data from the user who
-     * is logged to de app.
-     * @param login A String that contains the words the user introduced.
+     * @param userLogin a string with the login from the user who is logged to
+     * de app.
+     * @param creatorLogin A String that contains the words the user introduced.
      * @return An ArrayList of Albums that contains the albums that the method
      * found.
      * @throws ReadException Thrown when any error or exception occurs during
      * reading.
      */
-    @Override
-    public ArrayList<Album> findMySharedAlbumsByCreator(User user, String login) throws ReadException {
+    /*@Override
+    public ArrayList<Album> findMySharedAlbumsByCreator(User user,String creatorLogin) throws ReadException {
         ArrayList<Album> sharedAlbums = null;
+        User user;
         try {
-            sharedAlbums = new ArrayList<>(em.createNamedQuery("findMySharedAlbumsByCreator").getResultList());
+            user = em.find(User.class, userLogin);
+            sharedAlbums = new ArrayList<>(em.createNamedQuery("findMySharedAlbumsByCreator").setParameter("user", user).setParameter("userLogin", user.getLogin()).setParameter("creatorLogin", creatorLogin).getResultList());
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "AlbumEJB ->  findMySharedAlbumsByCreator(User user, String login) {0}", e.getMessage());
         }
         return sharedAlbums;
-    }
-
+    }*/
+    /**
+     * This method delete an album that someone shared you, it only will be
+     * deleted from your shared table, you can´t delete it literally
+     *
+     * @param userLogin a string with the login from the user who is logged to
+     * de app.
+     * @param album the Entity album that is a shared album you want to delete
+     * @throws exceptions.DeleteException
+     */
     @Override
-    public Album findAlbumByID(Integer id) throws ReadException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void deleteFromSharedsAnAlbum(String userLogin, Album album) throws DeleteException {
+        try {
+            int deletedCount = em.createNamedQuery("deleteFromSharedsAnAlbum").setParameter("userLogin", userLogin).setParameter("idAlbum", album.getId()).executeUpdate();
+            if (deletedCount != 1) {
+                throw new DeleteException();
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "AlbumEJB ->  deleteFromSharedsAnAlbum(User user, String login) {0}", e.getMessage());
+        }
     }
 }

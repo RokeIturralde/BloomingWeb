@@ -9,8 +9,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
@@ -23,7 +21,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -35,6 +32,14 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author nerea
  */
 @NamedQueries({
+    //Query to find an album using the id.
+    @NamedQuery(
+            name = "findAlbumByID", query = "SELECT a "
+            + "FROM Album a "
+            + "WHERE a.id = :albumId"
+    )
+    ,
+    //Query to find an album using the name.
     @NamedQuery(
             name = "findAlbumByName", query = "SELECT a "
             + "FROM Album a "
@@ -42,52 +47,67 @@ import javax.xml.bind.annotation.XmlTransient;
             + "AND a.name = :name"
     )
     ,
+    //Query to find all the albums from a creator.
     @NamedQuery(
             name = "findMyAllAlbums", query = "SELECT a "
-            + "FROM Album a, User u "
-            + "WHERE u.id = :creator"
+            + "FROM Album a "
+            + "WHERE a.creator = :creator"
     )
     ,
+    //Query to find all the albums from a creator 
+    //and the name contains the words the user introduced.
     @NamedQuery(
             name = "findMyAlbumsByName", query = "SELECT a "
-            + "FROM Album a, User u "
-            + "WHERE u.id = :creator"
+            + "FROM Album a "
+            + "WHERE a.creator = :creator "
+            + "AND a.name LIKE '%:name%'"
     )
     ,
+    //Query to find all the albums from a creator 
+    //and has an specific creation date.
     @NamedQuery(
             name = "findMyAlbumsByDate", query = "SELECT a "
-            + "FROM Album a, User u "
-            + "WHERE u.id = :creator"
+            + "FROM Album a "
+            + "WHERE a.creator = :creator "
+            + "AND a.creationDate = :date"
     )
     ,
     @NamedQuery(
             name = "findMyAllSharedAlbums", query = "SELECT a "
-            + "FROM Album a, User u "
-            + "WHERE  a.users = :u.id"
-            + "AND u.sharedAlbums = :id"
+            + "FROM Album a INNER JOIN a.users us "
+            + "WHERE a.creator != :user "
+            + "AND us.login = :userLogin"
     )
     ,
     @NamedQuery(
-            name = "findMySharedAlbumsByName", query = "SELECT a.* "
-            + "FROM Album a "
-            + "WHERE "
-            + "ORDERBY"
+            name = "findMySharedAlbumsByName", query = "SELECT a "
+            + "FROM Album a INNER JOIN a.users us "
+            + "WHERE a.creator != :user "
+            + "AND us.login = :userLogin "
+            + "AND a.name LIKE '%:name%'"
     )
     ,
     @NamedQuery(
-            name = "findMySharedAlbumsByDate", query = "SELECT a.* "
-            + "FROM Album a "
-            + "WHERE "
-            + "ORDERBY"
+            name = "findMySharedAlbumsByDate", query = "SELECT a "
+            + "FROM Album a INNER JOIN a.users us "
+            + "WHERE a.creator != :user "
+            + "AND us.login = :userLogin "
+            + "AND a.creationDate = :date"
     )
-    ,
+   /* ,
     @NamedQuery(
-            name = "findMySharedAlbumsByCreator", query = "SELECT a.* "
-            + "FROM Album a "
-            + "WHERE "
-            + "ORDERBY"
-    )
-
+            name = "findMySharedAlbumsByCreator", query = "SELECT a "
+            + "FROM Album a INNER JOIN a.users us, INNER JOIN a.creator c "
+            + "WHERE c.login LIKE '%:creatorLogin%'"
+            + "AND us.login = :userLogin"
+    )*/
+    /*,
+    @NamedQuery(
+            name = "deleteFromSharedsAnAlbum", query = "DELETE "
+            + "FROM Album a, INNER JOIN a.users us "
+            + "WHERE a.id = :idAlbum "
+            + "AND us.login = :userLogin"
+    )*/
 })
 
 @Entity
@@ -95,8 +115,6 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 public class Album implements Serializable {
 
-    @PersistenceContext
-    private EntityManager em;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -109,6 +127,8 @@ public class Album implements Serializable {
     @ManyToOne
     private User creator;
     @Temporal(TemporalType.DATE)
+    /*@JsonSerialize(as = Date.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")*/
     private Date creationDate;
     /**
      * Relation containing the list of users that were shared the Album
