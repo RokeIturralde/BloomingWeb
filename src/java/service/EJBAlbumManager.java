@@ -16,7 +16,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import org.hibernate.jpa.internal.EntityManagerImpl;
 
 /**
  * This is the stateless EJB that implements the AlbumManagerLocal interface for
@@ -112,22 +111,21 @@ public class EJBAlbumManager implements AlbumManagerLocal {
             throw new SharingException(e.getMessage());
         }
     }
-
     /**
-     * The method finds an album which name is equals the name the User
+     * The method finds an album which id is equals the id the User
      * introduce for a new album.
      *
-     * @param name
+     * @param id
      * @return The Album entity object to be found.
      * @throws ReadException
      */
     @Override
-    public Album findAlbumByName(String name) throws ReadException {
+    public Album findAlbumByID(Integer id) throws ReadException {
         Album album = null;
         try {
-            album = (Album) em.createNamedQuery("findAlbumByName").getSingleResult();
+            album = (Album) em.createNamedQuery("findAlbumByID").setParameter("albumId", id).getSingleResult();
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "AlbumEJB ->  findAlbumByName(String name) {0}", e.getMessage());
+            LOGGER.log(Level.SEVERE, "AlbumEJB ->  findAlbumByID(Integer id) {0}", e.getMessage());
         }
         return album;
     }
@@ -146,8 +144,7 @@ public class EJBAlbumManager implements AlbumManagerLocal {
     public ArrayList<Album> findMyAllAlbums(User user) throws ReadException {
         ArrayList<Album> myAlbums = null;
         try {
-
-            myAlbums = new ArrayList<>(em.createNamedQuery("findMyAllAlbums").getResultList());
+            myAlbums = new ArrayList<>(em.createNamedQuery("findMyAllAlbums").setParameter("creator", user).getResultList());
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "AlbumEJB ->  findMyAllAlbums(User user) {0}", e.getMessage());
         }
@@ -170,8 +167,7 @@ public class EJBAlbumManager implements AlbumManagerLocal {
     public ArrayList<Album> findMyAlbumsByName(User user, String name) throws ReadException {
         ArrayList<Album> myAlbums = null;
         try {
-
-            myAlbums = new ArrayList<>(em.createNamedQuery("findMyAlbumsByName").getResultList());
+            myAlbums = new ArrayList<>(em.createNamedQuery("findMyAlbumsByName").setParameter("creator", user).setParameter("name", name).getResultList());
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "AlbumEJB ->  findMyAlbumsByName(User user, String name) {0}", e.getMessage());
         }
@@ -195,7 +191,7 @@ public class EJBAlbumManager implements AlbumManagerLocal {
         ArrayList<Album> myAlbums = null;
         try {
 
-            myAlbums = new ArrayList<>(em.createNamedQuery("findMyAlbumsByDate").getResultList());
+            myAlbums = new ArrayList<>(em.createNamedQuery("findMyAlbumsByDate").setParameter("creator", user).setParameter("date", date).getResultList());
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "AlbumEJB ->  findMyAlbumsByDate(User user, Date date) {0}", e.getMessage());
         }
@@ -215,8 +211,9 @@ public class EJBAlbumManager implements AlbumManagerLocal {
     @Override
     public ArrayList<Album> findMyAllSharedAlbums(User user) throws ReadException {
         ArrayList<Album> sharedAlbums = null;
+ 
         try {
-            sharedAlbums = new ArrayList<>(em.createNamedQuery("findMyAllSharedAlbums").getResultList());
+            sharedAlbums = new ArrayList<>(em.createNamedQuery("findMyAllSharedAlbums").setParameter("user", user).setParameter("userLogin", user.getLogin()).getResultList());
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "AlbumEJB ->  findMyAllSharedAlbums(User user) {0}", e.getMessage());
         }
@@ -239,7 +236,7 @@ public class EJBAlbumManager implements AlbumManagerLocal {
     public ArrayList<Album> findMySharedAlbumsByName(User user, String name) throws ReadException {
         ArrayList<Album> sharedAlbums = null;
         try {
-            sharedAlbums = new ArrayList<>(em.createNamedQuery("findMySharedAlbumsByName").getResultList());
+            sharedAlbums = new ArrayList<>(em.createNamedQuery("findMySharedAlbumsByName").setParameter("user", user).setParameter("userLogin", user.getLogin()).setParameter("name", name).getResultList());
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "AlbumEJB ->  findMySharedAlbumsByName(User user, String name) {0}", e.getMessage());
         }
@@ -262,7 +259,7 @@ public class EJBAlbumManager implements AlbumManagerLocal {
     public ArrayList<Album> findMySharedAlbumsByDate(User user, Date date) throws ReadException {
         ArrayList<Album> sharedAlbums = null;
         try {
-            sharedAlbums = new ArrayList<>(em.createNamedQuery("findMySharedAlbumsByDate").getResultList());
+            sharedAlbums = new ArrayList<>(em.createNamedQuery("findMySharedAlbumsByDate").setParameter("user", user).setParameter("userLogin", user.getLogin()).setParameter("date", date).getResultList());
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "AlbumEJB ->  findMySharedAlbumsByDate(User user, Date date) {0}", e.getMessage());
         }
@@ -275,25 +272,38 @@ public class EJBAlbumManager implements AlbumManagerLocal {
      *
      * @param user The User Entity Object containing User data from the user who
      * is logged to de app.
-     * @param login A String that contains the words the user introduced.
+     * @param creatorLogin A String that contains the words the user introduced.
      * @return An ArrayList of Albums that contains the albums that the method
      * found.
      * @throws ReadException Thrown when any error or exception occurs during
      * reading.
      */
     @Override
-    public ArrayList<Album> findMySharedAlbumsByCreator(User user, String login) throws ReadException {
+    public ArrayList<Album> findMySharedAlbumsByCreator(User user,String creatorLogin) throws ReadException {
         ArrayList<Album> sharedAlbums = null;
         try {
-            sharedAlbums = new ArrayList<>(em.createNamedQuery("findMySharedAlbumsByCreator").getResultList());
+            //find user by EJBUSer
+            //User user;
+            sharedAlbums = new ArrayList<>(em.createNamedQuery("findMySharedAlbumsByCreator").setParameter("user", user).setParameter("userLogin", user.getLogin()).setParameter("creatorLogin", creatorLogin).getResultList());
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "AlbumEJB ->  findMySharedAlbumsByCreator(User user, String login) {0}", e.getMessage());
         }
         return sharedAlbums;
     }
-
+    
+    /**
+     * This method delete an album that someone shared you, it only will be
+     * deleted from your shared table, you can´t delete it literally
+     *
+     * @param album the shared album you want to delete
+     */
     @Override
-    public Album findAlbumByID(Integer id) throws ReadException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void deleteFromSharedsAnAlbum(User user, Album album)  throws DeleteException{
+         try {
+            int deletedCount = em.createNamedQuery("deleteFromSharedsAnAlbum").setParameter("userLogin", user.getLogin()).setParameter("idAlbum", album.getId()).executeUpdate();
+      
+         } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "AlbumEJB ->  deleteFromSharedsAnAlbum(User user, String login) {0}", e.getMessage());
+        }
     }
 }

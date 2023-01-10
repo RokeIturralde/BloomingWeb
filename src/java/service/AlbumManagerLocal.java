@@ -68,16 +68,6 @@ public interface AlbumManagerLocal {
     public Album findAlbumByID(Integer id) throws ReadException;
 
     /**
-     * The method finds an album which name is equals the name the User
-     * introduce for a new album.
-     *
-     * @param name
-     * @return The Album entity object to be found.
-     * @throws ReadException
-     */
-    public Album findAlbumByName(String name) throws ReadException;
-
-    /**
      * The method finds all the albums where the User is the creator
      *
      * @param user The User Entity Object containing User data from the user who
@@ -171,4 +161,12 @@ public interface AlbumManagerLocal {
      */
     public ArrayList<Album> findMySharedAlbumsByCreator(User user, String login) throws ReadException;
 
+    /**
+     * This method delete an album that someone shared you, it only will be
+     * deleted from your shared table, you can´t delete it literally
+     *
+     * @param user the user that want to delete the album
+     * @param album the shared album you want to delete
+     */
+    public void deleteFromSharedsAnAlbum(User user, Album album) throws DeleteException;
 }
