@@ -1,7 +1,6 @@
 package service;
 
 import java.util.Set;
-import java.util.SortedSet;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -25,90 +24,64 @@ import service.user.IUserManager;
 public class EJBUserManager implements IUserManager {
 
     /**
-     * the entity manager is used to manage all the
-     * functions and operations over the database.
+     * the entity manager is used to manage all the 
      */
 
     @PersistenceContext(unitName = "BloomingWebPU")
     private EntityManager em;
 
+
     /**
      * writes a new user in the database
-     * 
      * @param user is the user to be written.
-     * @throws CreateException
+     * 
+     * TODO: does it have to be checked before?
      */
 
     @Override
     public void createUser(User user) throws CreateException {
-        try {
-            if (!em.contains(user))
-                em.persist(user);
-        } catch (Exception e) {
-            throw new CreateException();
-        }
+        if (user == null)
+            throw new CreateException("The user is null.");
+        else
+            if (user.getLogin().length() <= 4)
+        em.persist(user);
     }
 
-    /**
-     * @param user is the user to be updated
-     */
 
     @Override
     public void updateUser(User user) throws UpdateException {
-        try {
-            if (em.contains(user))
-                em.merge(user);
-        } catch (Exception e) {
-            throw new UpdateException();
-        }
+        // TODO Auto-generated method stub
+        
     }
+
 
     @Override
     public void removeUser(User user) throws DeleteException {
-        try {
-            if (em.contains(user))
-                em.remove(user);
-        } catch (Exception e) {
-            // TODO: handle exception
-        }
-
+        // TODO Auto-generated method stub
+        
     }
+
 
     @Override
     public User findUserByLogin(String login) throws FindUserException {
-        User u;
-        try {
-            u = em.find(User.class, login);
-        } catch (Exception e) {
-            throw new FindUserException();
-        }
-
-        return u;
+        // TODO Auto-generated method stub
+        return null;
     }
+
 
     @Override
     public User findUserByEmail(String email) throws FindUserException {
-        User u;
-        try {
-            u = (User) em
-                .createNamedQuery("findUserByEmail")
-                    .setParameter("email", email)
-                        .getSingleResult();
-        } catch (Exception e) {
-            throw new FindUserException();
-        }
-        return u;
+        // TODO Auto-generated method stub
+        return null;
     }
+
 
     @Override
     public Set<User> findUsersByName(String name) throws FindUserException {
-        Set <User> users = new SortedSet <User> ();
-        try {
-        } catch (Exception e) {
-            throw new FindUserException();
-        }
-        return users;
+        // TODO Auto-generated method stub
+        return null;
     }
+
 
     @Override
     public Set<User> findUsersByStatus(Status status) throws FindUserException {
@@ -116,10 +89,12 @@ public class EJBUserManager implements IUserManager {
         return null;
     }
 
+
     @Override
     public Set<User> findUsersByPrivilege(Privilege privilege) throws FindUserException {
         // TODO Auto-generated method stub
         return null;
     }
+    
 
 }

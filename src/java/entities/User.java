@@ -29,31 +29,31 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
+ *
  * @author dani
  */
-
- @NamedQueries({
+/**
+ * these are all the "functions" of this class:
+ *  - find all users (for admins)
+ * 
+ */
+@NamedQueries({
     @NamedQuery(
-        name = "findUserByEmail",
-        query = "SELECT u FROM user u WHERE u.email = :email"
+            name = "findAllContents", query = "SELECT c FROM Content c"
     )
     ,
-    @NamedQuery(
-        name = "findUserByName",
-        query = "SELECT u FROM user u WHERE u.name = :name"
+        @NamedQuery(
+            name = "findContentByName", query = "SELECT c FROM Content c where c.name=:contentName"
     )
     ,
-    @NamedQuery(
-        name = "findUserByStatus",
-        query = "SELECT u FROM user u WHERE u.status = :status"
+@NamedQuery(
+            name = "findContentByAlbum", query = "SELECT c FROM Content c inner join c.albums a where a.id=:albumId"
     )
     ,
-    @NamedQuery(
-        name = "findUserByPrivilege",
-        query = "SELECT u FROM user u WHERE u.privilege = :privilege"
+@NamedQuery(
+            name = "findContentByDate", query = "SELECT c FROM Content c where c.uploadDate=:date"
     )
- })
-
+})
 @Entity
 @Table(name = "user", schema = "bloomingdb")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -62,8 +62,8 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO) //  TODO: what do i change here?
     private String login;
-
     private String email;
     private String fullName;
     private String password;
@@ -102,6 +102,14 @@ public class User implements Serializable {
 
     public void setSharedAlbums(List<Album> sharedAlbums) {
         this.sharedAlbums = sharedAlbums;
+    }
+
+    public Integer getIdUser() {
+        return id;
+    }
+
+    public void setIdUser(Integer idUser) {
+        this.id = idUser;
     }
 
     public String getEmail() {
@@ -163,7 +171,7 @@ public class User implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (login != null ? login.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -174,7 +182,7 @@ public class User implements Serializable {
             return false;
         }
         User other = (User) object;
-        if ((this.login == null && other.login != null) || (this.login != null && !this.login.equals(other.login))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -182,7 +190,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.User[ login=" + login + " ]";
+        return "entities.User[ id=" + id + " ]";
     }
 
 }
