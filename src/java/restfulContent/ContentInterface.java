@@ -49,4 +49,6 @@ public interface ContentInterface {
     public void createCustomImage(CustomImage content) throws CreateException;
 
     public CustomImage findCustomImageById(Integer contentId) throws FindContentException;
+    
+    public List<Content> findContentByLocation(String location) throws FindContentException;
 }

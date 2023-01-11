@@ -47,6 +47,10 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQuery(
             name = "findContentByDate", query = "SELECT c FROM Content c where c.uploadDate=:date"
     )
+    ,
+@NamedQuery(
+            name = "findContentByLocation", query = "SELECT c FROM Content c where c.location=:contentLocation"
+    )
 })
 @Entity
 @Table(name = "content", schema = "bloomingdb")
@@ -62,13 +66,21 @@ public class Content implements Serializable {
      * Relation containing the list albums that include the Content
      */
     @ManyToMany(mappedBy = "contents", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-
     private List<Album> albums;
     private String name;
     @Temporal(TemporalType.TIMESTAMP)
     @JsonSerialize(as = Date.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private Date uploadDate;
+    private String location;
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
     public Integer getContentId() {
         return id;

@@ -146,4 +146,16 @@ public class ContentFacadeREST {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
+    
+    @GET
+    @Path("/findByLocation/{contentLocation}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Content> findContentByLocation(@PathParam("contentLocation") String contentLocation) throws FindContentException {
+        try {
+            return ejbC.findContentByLocation(contentLocation);
+        } catch (FindContentException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
 }

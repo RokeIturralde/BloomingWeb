@@ -136,6 +136,13 @@ public class EJBContentManager implements ContentInterface {
 
     }
 
+    /**
+     * Finds Contents by Album id (Shows all the Contents in that Album)
+     *
+     * @param idAlbum
+     * @return the Contents of that Album
+     * @throws FindContentException
+     */
     @Override
     public List<Content> findContentByAlbum(Integer idAlbum) throws FindContentException {
         List<Content> contents;
@@ -219,7 +226,12 @@ public class EJBContentManager implements ContentInterface {
         }
         return customText;
     }
-    
+
+    /**
+     *
+     * @param content
+     * @throws CreateException
+     */
     @Override
     public void createCustomText(CustomText content) throws CreateException {
         try {
@@ -229,7 +241,7 @@ public class EJBContentManager implements ContentInterface {
         }
 
     }
-    
+
     @Override
     public void createCustomImage(CustomImage content) throws CreateException {
         try {
@@ -239,7 +251,7 @@ public class EJBContentManager implements ContentInterface {
         }
 
     }
-    
+
     @Override
     public CustomImage findCustomImageById(Integer contentId) throws FindContentException {
         CustomImage customImage = null;
@@ -249,5 +261,16 @@ public class EJBContentManager implements ContentInterface {
             throw new FindContentException(e.getMessage());
         }
         return customImage;
+    }
+
+    @Override
+    public List<Content> findContentByLocation(String location) throws FindContentException {
+        List<Content> contents;
+        try {
+            contents = em.createNamedQuery("findContentByLocation").setParameter("contentLocation", location).getResultList();
+            return contents;
+        } catch (Exception e) {
+            throw new FindContentException(e.getMessage());
+        }
     }
 }
