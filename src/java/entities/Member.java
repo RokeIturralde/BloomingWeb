@@ -1,27 +1,37 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entities;
 
-import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
  * @author 2dam
  */
+
+@NamedQueries({
+    @NamedQuery(
+            name = "findMembersByPlan", query = "SELECT m FROM member m"
+    )
+    ,
+    @NamedQuery(
+            name = "findMembersByEndingDate", query = "SELECT m FROM member m where m.memberEndingDate=:memberEndingDate"
+    )
+    ,
+    @NamedQuery(
+            name = "findMembersByStartingDate", query = "SELECT m FROM member m where m.memberStartingDate=:memberStartingDate"
+    )
+})
+
 @Entity
 @Table(name = "user", schema = "bloomingdb")
 @XmlRootElement
-public class Member extends User implements Serializable {
+public class Member extends User {
 
     private static final long serialVersionUID = 1L;
     @Temporal(TemporalType.DATE)

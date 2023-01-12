@@ -1,12 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package service;
 
 import entities.Member;
 import java.util.List;
+
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -21,12 +18,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 /**
- *
- * @author 2dam
+ * @author dani
  */
+
 @Stateless
 @Path("entities.member")
 public class MemberFacadeREST extends AbstractFacade<Member> {
+
+    @EJB
+    //private IMemberManager ejb;
 
     @PersistenceContext(unitName = "BloomingWebPU")
     private EntityManager em;

@@ -41,24 +41,20 @@ import javax.xml.bind.annotation.XmlTransient;
  *  - users by status
  */
 @NamedQueries({
-    @NamedQuery(
-            name = "findUserByEmail", query = "SELECT u FROM user u"
-    )
     //TODO: comparison by substring?
-    ,
-        @NamedQuery(
+    @NamedQuery(
             name = "findUserByName", query = "SELECT u FROM user u where u.name=:userName"
     )
     ,
-@NamedQuery(
+    @NamedQuery(
             name = "findUserByEmail", query = "SELECT u FROM user u u.name=:userEmail"
     )
     ,
-@NamedQuery(
+    @NamedQuery(
             name = "findUserByPrivilege", query = "SELECT u FROM user u where u.privilege=:userPrivilege"
     )
     ,
-@NamedQuery(
+    @NamedQuery(
             name = "findUserByStatus", query = "SELECT u FROM user u where u.status=:userStatus"
     )
 })
@@ -99,7 +95,7 @@ public class User implements Serializable {
      * Relational field containing the list of albums shared with the User
      */
     @ManyToMany
-    @JoinTable(name = "user_sharedAlbums", schema = "bloomingdb", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+    @JoinTable(name = "user_sharedAlbums", schema = "bloomingdb", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "login"),
             inverseJoinColumns = @JoinColumn(name = "album_id", referencedColumnName = "id"))
     private List<Album> sharedAlbums;
 
