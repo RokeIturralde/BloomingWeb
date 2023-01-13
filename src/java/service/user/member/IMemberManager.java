@@ -1,4 +1,4 @@
-package service.user;
+package service.user.member;
 
 import java.sql.Date;
 import java.util.List;
@@ -16,7 +16,9 @@ public interface IMemberManager {
 
     public void updateMember(Member member) throws UpdateException;
 
-    public void removeUser(Member member) throws DeleteException;
+    public void removeMember(String login) throws DeleteException;
+
+    public Member findMemberByLogin(String login) throws FindMemberException;
 
     public List <Member> findMembersByPlan(MembershipPlan membershipPlan) throws FindMemberException;
 

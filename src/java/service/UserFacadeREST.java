@@ -45,20 +45,20 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Integer id, User entity) {
+    public void edit(@PathParam("id") String id, User entity) {
         super.edit(entity);
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") Integer id) {
+    public void remove(@PathParam("id") String id) {
         super.remove(super.find(id));
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public User find(@PathParam("id") Integer id) {
+    public User find(@PathParam("id") String id) {
         return super.find(id);
     }
 

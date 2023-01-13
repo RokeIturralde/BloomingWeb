@@ -26,9 +26,6 @@ import javax.persistence.NamedQuery;
     ,
     @NamedQuery(
             name = "findMembersByStartingDate", query = "SELECT m FROM member m where m.memberStartingDate=:memberStartingDate"
-    ),
-    @NamedQuery(
-            name = "findMemberById", query = "SELECT m FROM member m WHERE m.login=:memberLogin"
     )
 })
 

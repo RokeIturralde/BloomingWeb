@@ -28,7 +28,6 @@ import javax.persistence.NamedQuery;
  */
 
  @NamedQueries({
-    //TODO: comparison by substring?
     @NamedQuery(
             name = "findUserByName", query = "SELECT u FROM user u where u.name=:userName"
     )

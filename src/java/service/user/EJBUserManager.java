@@ -21,7 +21,6 @@ import javax.ejb.Stateless;
 
 @Stateless
 public class EJBUserManager implements IUserManager {
-
     /**
      * the entity manager is used to manage all the 
      */
@@ -66,9 +65,10 @@ public class EJBUserManager implements IUserManager {
      * @param userId
      */
     @Override
-    public void removeUser(String userLogin) throws DeleteException {
+    public void removeUser(String login) throws DeleteException {
         try {
-            em.remove(em.merge(em.find(User.class, userLogin)));
+            if (em.contains(findUserByLogin(login)))
+                em.remove(em.find(User.class, login));
         } catch (Exception e) {
             throw new DeleteException(e.getMessage());
         }
@@ -86,11 +86,11 @@ public class EJBUserManager implements IUserManager {
 
 
     @Override
-    public User findUserByEmail(String userEmail) throws FindUserException {
+    public User findUserByEmail(String email) throws FindUserException {
         try {
             return User.class.cast(
                 em.createNamedQuery("findUserByEmail")
-                    .setParameter("userEmail", userEmail)
+                    .setParameter("userEmail", email)
                         .getFirstResult());
         } catch (Exception e) {
             throw new FindUserException(e.getMessage());
@@ -99,10 +99,10 @@ public class EJBUserManager implements IUserManager {
 
 
     @Override
-    public List<User> findUsersByName(String userName) throws FindUserException {
+    public List<User> findUsersByName(String name) throws FindUserException {
         try {
             return em.createNamedQuery("findUserByName")
-                    .setParameter("userName", userName)
+                    .setParameter("userName", name)
                         .getResultList();
         } catch (Exception e) {
             throw new FindUserException(e.getMessage());
@@ -111,10 +111,10 @@ public class EJBUserManager implements IUserManager {
 
 
     @Override
-    public List<User> findUsersByStatus(Status userStatus) throws FindUserException {
+    public List<User> findUsersByStatus(Status status) throws FindUserException {
         try {
             return em.createNamedQuery("findUserByStatus")
-                    .setParameter("userStatus", userStatus)
+                    .setParameter("userStatus", status)
                         .getResultList();
         } catch (Exception e) {
             throw new FindUserException(e.getMessage());
@@ -123,15 +123,14 @@ public class EJBUserManager implements IUserManager {
 
 
     @Override
-    public List<User> findUsersByPrivilege(Privilege userPrivilege) throws FindUserException {
+    public List<User> findUsersByPrivilege(Privilege privilege) throws FindUserException {
         try {
             return em.createNamedQuery("findUserByPrivilege")
-                    .setParameter("userPrivilege", userPrivilege)
+                    .setParameter("userPrivilege", privilege)
                         .getResultList();
         } catch (Exception e) {
             throw new FindUserException(e.getMessage());
         }
     }
-    
 
 }
