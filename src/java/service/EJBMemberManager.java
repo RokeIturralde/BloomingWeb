@@ -1,4 +1,4 @@
-package service.user.member;
+package service;
 
 import java.sql.Date;
 import java.util.List;

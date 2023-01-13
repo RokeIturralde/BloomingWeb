@@ -29,15 +29,15 @@ import javax.persistence.NamedQuery;
 
  @NamedQueries({
     @NamedQuery(
-            name = "findUserByName", query = "SELECT u FROM user u where u.name=:userName"
+            name = "findUserByName", query = "SELECT u FROM User u WHERE u.fullName=:userName"
     )
     ,
     @NamedQuery(
-            name = "findUserByEmail", query = "SELECT u FROM user u u.name=:userEmail"
+            name = "findUserByEmail", query = "SELECT u FROM User u WHERE u.email=:userEmail"
     )
     ,
     @NamedQuery(
-            name = "findUserByStatus", query = "SELECT u FROM user u where u.status=:userStatus"
+            name = "findUserByStatus", query = "SELECT u FROM User u WHERE u.status=:userStatus"
     )
 })
 @Entity

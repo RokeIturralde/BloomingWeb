@@ -17,15 +17,15 @@ import javax.persistence.NamedQuery;
 
  @NamedQueries({
     @NamedQuery(
-            name = "findMembersByPlan", query = "SELECT m FROM member m WHERE  m.plan=:plan"
+            name = "findMembersByPlan", query = "SELECT m FROM Member m WHERE  m.plan=:plan"
     )
     ,
     @NamedQuery(
-            name = "findMembersByEndingDate", query = "SELECT m FROM member m where m.memberEndingDate=:memberEndingDate"
+            name = "findMembersByEndingDate", query = "SELECT m FROM Member m WHERE m.memberEndingDate=:memberEndingDate"
     )
     ,
     @NamedQuery(
-            name = "findMembersByStartingDate", query = "SELECT m FROM member m where m.memberStartingDate=:memberStartingDate"
+            name = "findMembersByStartingDate", query = "SELECT m FROM Member m WHERE m.memberStartingDate=:memberStartingDate"
     )
 })
 
