@@ -1,22 +1,23 @@
 package entities;
 
+import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 /**
- * @author 2dam
+ * @author dani
  */
 
-@NamedQueries({
+ @NamedQueries({
     @NamedQuery(
-            name = "findMembersByPlan", query = "SELECT m FROM member m"
+            name = "findMembersByPlan", query = "SELECT m FROM member m WHERE  m.plan=:plan"
     )
     ,
     @NamedQuery(
@@ -25,13 +26,16 @@ import javax.xml.bind.annotation.XmlRootElement;
     ,
     @NamedQuery(
             name = "findMembersByStartingDate", query = "SELECT m FROM member m where m.memberStartingDate=:memberStartingDate"
+    ),
+    @NamedQuery(
+            name = "findMemberById", query = "SELECT m FROM member m WHERE m.login=:memberLogin"
     )
 })
 
 @Entity
-@Table(name = "user", schema = "bloomingdb")
+@Table(name = "member", schema = "bloomingdb")
 @XmlRootElement
-public class Member extends User {
+public class Member extends User implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Temporal(TemporalType.DATE)

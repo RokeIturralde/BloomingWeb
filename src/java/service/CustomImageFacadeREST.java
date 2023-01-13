@@ -6,69 +6,86 @@
 package service;
 
 import entities.CustomImage;
-import exceptions.CreateException;
-import exceptions.FindContentException;
-import exceptions.UpdateException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.ejb.EJB;
+import java.util.List;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import restfulContent.ContentInterface;
 
 /**
  *
- * @author Roke
+ * @author 2dam
  */
+@Stateless
 @Path("entities.customimage")
-public class CustomImageFacadeREST {
+public class CustomImageFacadeREST extends AbstractFacade<CustomImage> {
 
-    @EJB
-    private ContentInterface ejbC;
+    @PersistenceContext(unitName = "BloomingWebPU")
+    private EntityManager em;
 
-    private Logger LOGGER = Logger.getLogger(CustomImageFacadeREST.class.getName());
-
-    @PUT
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(CustomImage entity) {
-        try {
-            ejbC.updateCustomImage(entity);
-        } catch (UpdateException ex) {
-            LOGGER.severe(ex.getMessage());
-            throw new InternalServerErrorException(ex.getMessage());
-        }
-
-    }
-
-    @GET
-    @Path("customImageFindId/{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public CustomImage findCustomTextById(@PathParam("id") Integer contentId) {
-        CustomImage customImage = null;
-        try {
-            customImage = ejbC.findCustomImageById(contentId);
-        } catch (FindContentException ex) {
-            LOGGER.severe(ex.getMessage());
-            throw new InternalServerErrorException(ex.getMessage());
-        }
-        return customImage;
+    public CustomImageFacadeREST() {
+        super(CustomImage.class);
     }
 
     @POST
+    @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void createCustomImage(CustomImage entity) {
-        try {
-            ejbC.createCustomImage(entity);
-        } catch (CreateException ex) {
-            LOGGER.severe(ex.getMessage());
-            throw new InternalServerErrorException(ex.getMessage());
-        }
+    public void create(CustomImage entity) {
+        super.create(entity);
     }
+
+    @PUT
+    @Path("{id}")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void edit(@PathParam("id") Integer id, CustomImage entity) {
+        super.edit(entity);
+    }
+
+    @DELETE
+    @Path("{id}")
+    public void remove(@PathParam("id") Integer id) {
+        super.remove(super.find(id));
+    }
+
+    @GET
+    @Path("{id}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public CustomImage find(@PathParam("id") Integer id) {
+        return super.find(id);
+    }
+
+    @GET
+    @Override
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<CustomImage> findAll() {
+        return super.findAll();
+    }
+
+    @GET
+    @Path("{from}/{to}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<CustomImage> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+        return super.findRange(new int[]{from, to});
+    }
+
+    @GET
+    @Path("count")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String countREST() {
+        return String.valueOf(super.count());
+    }
+
+    @Override
+    protected EntityManager getEntityManager() {
+        return em;
+    }
+    
 }

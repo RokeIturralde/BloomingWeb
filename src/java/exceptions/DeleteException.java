@@ -7,7 +7,7 @@ package exceptions;
 
 /**
  *
- * @author Roke
+ * @author 2dam
  */
 public class DeleteException extends Exception {
 

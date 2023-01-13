@@ -8,6 +8,7 @@ package entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -17,16 +18,61 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author 2dam
+ * @author nerea
  */
+@NamedQueries({
+    //Query to find an album using the name.
+    @NamedQuery(
+            name = "findAlbumByName", query = "SELECT a FROM Album a WHERE a.creator = :creator AND a.name = :name"
+    )
+    ,
+    //Query to find all the albums from a creator.
+    @NamedQuery(
+            name = "findMyAllAlbums", query = "SELECT a FROM Album a WHERE a.creator = :creator"
+    )
+    ,
+    //Query to find all the albums from a creator 
+    //and the name contains the words the user introduced.
+    @NamedQuery(
+            name = "findMyAlbumsByName", query = "SELECT a FROM Album a WHERE a.creator = :creator AND a.name LIKE '%:name%'"
+    )
+    ,
+    //Query to find all the albums from a creator 
+    //and has an specific creation date.
+    @NamedQuery(
+            name = "findMyAlbumsByDate", query = "SELECT a FROM Album a WHERE a.creator = :creator AND a.creationDate = :date"
+    )
+    ,
+    @NamedQuery(
+            name = "findMyAllSharedAlbums", query = "SELECT a FROM Album a INNER JOIN a.users us WHERE a.creator != :user AND us.login = :userLogin"
+    )
+    ,
+    @NamedQuery(
+            name = "findMySharedAlbumsByName", query = "SELECT a FROM Album a INNER JOIN a.users us WHERE a.creator != :user AND us.login = :userLogin AND a.name LIKE '%:name%'"
+    )
+    ,
+    @NamedQuery(
+            name = "findMySharedAlbumsByDate", query = "SELECT a FROM Album a INNER JOIN a.users us WHERE a.creator != :user AND us.login = :userLogin AND a.creationDate = :date"
+    )
+    ,
+    @NamedQuery(
+            name = "findMySharedAlbumsByCreator", query = "SELECT a FROM Album a INNER JOIN a.users us INNER JOIN a.creator c WHERE c.login LIKE '%:creatorLogin%' AND us.login = :userLogin"
+    )
+    /*,
+    @NamedQuery(
+            name = "removeFromSharedsAnAlbum", query = "DELETE FROM Album a INNER JOIN a us WHERE a.id = :idAlbum AND us.login = :userLogin"
+    )*/
+})
+
 @Entity
 @Table(name = "album", schema = "bloomingdb")
 @XmlRootElement
@@ -36,76 +82,39 @@ public class Album implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    @Temporal(TemporalType.DATE)
-    private Date creationDate;
+    private String name;
+    private String description;
     /**
      * Relation containing the user creator of the Album
      */
     @ManyToOne
     private User creator;
-
-    public User getUser() {
-        return creator;
-    }
-
-    public void setUser(User creator) {
-        this.creator = creator;
-    }
-    private String description;
-    private String name;
+    @Temporal(TemporalType.DATE)
+    /*@JsonSerialize(as = Date.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")*/
+    private Date creationDate;
     /**
      * Relation containing the list of users that were shared the Album
      */
-    @ManyToMany(mappedBy = "sharedAlbums")
+    @ManyToMany(mappedBy = "sharedAlbums", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<User> users;
-
-    public Integer getId() {
-        return id;
-    }
-
-    @XmlTransient
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
     /**
      * Relational field containing the list contents in the Album
      */
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "contents_albums", schema = "bloomingdb", joinColumns = {
         @JoinColumn(name = "album_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "content_id", referencedColumnName = "id")})
+            inverseJoinColumns = {
+                @JoinColumn(name = "content_id", referencedColumnName = "id")})
     private List<Content> contents;
 
-    public void setId(Integer idAlbum) {
-        this.id = idAlbum;
+    //Getters and Setters
+    public Integer getId() {
+        return id;
     }
 
-    public Date getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public User getCreator() {
-        return creator;
-    }
-
-    public void setCreator(User creator) {
-        this.creator = creator;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -116,7 +125,38 @@ public class Album implements Serializable {
         this.name = name;
     }
 
-    @XmlTransient
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public User getCreator() {
+        return creator;
+    }
+
+    public void setCreator(User creator) {
+        this.creator = creator;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
     public List<Content> getContents() {
         return contents;
     }
@@ -147,7 +187,7 @@ public class Album implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.Album[ id=" + id + " ]";
+        return "Album[" + id + "]-> Name: " + name + ", Creator: " + creator + ", CreationDate: " + creationDate + ", ...";
     }
 
 }

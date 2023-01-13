@@ -9,22 +9,22 @@ package exceptions;
  *
  * @author 2dam
  */
-public class UpdateException extends Exception {
+public class ReadException extends Exception {
 
     /**
-     * Creates a new instance of <code>UpdateException</code> without detail
+     * Creates a new instance of <code>ReadException</code> without detail
      * message.
      */
-    public UpdateException() {
+    public ReadException() {
     }
 
     /**
-     * Constructs an instance of <code>UpdateException</code> with the specified
+     * Constructs an instance of <code>ReadException</code> with the specified
      * detail message.
      *
      * @param msg the detail message.
      */
-    public UpdateException(String msg) {
+    public ReadException(String msg) {
         super(msg);
     }
 }

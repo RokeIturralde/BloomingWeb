@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entities;
 
 import java.io.Serializable;
@@ -11,16 +6,12 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -28,19 +19,15 @@ import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+
+
 /**
- *
  * @author dani
  */
-/**
- * these are all the "functions" of this class:
- *  - all users (for admins)
- *  - users by email
- *  - users by name
- *  - users by privilege
- *  - users by status
- */
-@NamedQueries({
+
+ @NamedQueries({
     //TODO: comparison by substring?
     @NamedQuery(
             name = "findUserByName", query = "SELECT u FROM user u where u.name=:userName"
@@ -51,22 +38,17 @@ import javax.xml.bind.annotation.XmlTransient;
     )
     ,
     @NamedQuery(
-            name = "findUserByPrivilege", query = "SELECT u FROM user u where u.privilege=:userPrivilege"
-    )
-    ,
-    @NamedQuery(
             name = "findUserByStatus", query = "SELECT u FROM user u where u.status=:userStatus"
     )
 })
 @Entity
 @Table(name = "user", schema = "bloomingdb")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @XmlRootElement
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO) //  TODO: what do i change here?
     private String login;
     private String email;
     private String fullName;
