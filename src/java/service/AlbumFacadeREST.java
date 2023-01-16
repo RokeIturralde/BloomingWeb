@@ -6,8 +6,9 @@
 package service;
 
 import entities.Album;
-import entities.User;
 import exceptions.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
@@ -30,16 +31,17 @@ import javax.ws.rs.core.MediaType;
  * @author nerea
  */
 @Stateless
-@Path("album")
-public class AlbumFacadeREST{
+@Path("entities.album")
+public class AlbumFacadeREST {
 
     @EJB
-    private AlbumManagerLocal ejb;
+    private AlbumManagerLocal ejbA;
+
     /**
      * Logger for this class.
      */
     private static final Logger LOGGER = Logger.getLogger("package service");
-    
+
     /**
      * POST method to create a new Album: uses createAlbum business logic
      * method.
@@ -51,7 +53,7 @@ public class AlbumFacadeREST{
     public void createAlbum(Album album) {
         try {
             LOGGER.log(Level.INFO, "Creating a new Album id= {0}", album.getId());
-            ejb.createAlbum(album);
+            ejbA.createAlbum(album);
         } catch (CreateException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
@@ -68,7 +70,7 @@ public class AlbumFacadeREST{
     public void updateAlbum(Album album) {
         try {
             LOGGER.log(Level.INFO, "Updating the album {0} id= ", album.getId());
-            ejb.updateAlbum(album);
+            ejbA.updateAlbum(album);
         } catch (UpdateException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
@@ -83,12 +85,33 @@ public class AlbumFacadeREST{
     @DELETE
     @Path("{id}")
     public void removeAlbum(@PathParam("id") Integer id) {
+        Album album;
         try {
             LOGGER.log(Level.INFO, "Deleting the album {0} id= ", id);
-            Album album;
-            album = ejb.findAlbumByID(id);
-            ejb.removeAlbum(album);
+            album = ejbA.findAlbumByID(id);
+            ejbA.removeAlbum(album);
         } catch (ReadException | DeleteException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+
+    /**
+     * PUT method to share an existing album from the data store: uses
+     * updateAlbum business logic method..
+     *
+     * @param albumId The id of the album to be shared.
+     * @param userLogin A string with the login of the user to share with.
+     */
+    @PUT
+    @Path("shareAnAlbum/{albumId}/{userLogin}")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void shareAnAlbum(@PathParam("albumId") Integer albumId, @PathParam("userLogin") String userLogin) {
+        try {
+            LOGGER.log(Level.INFO, "Updating the album {0} id= ", albumId);
+            Album album = ejbA.findAlbumByID(albumId);
+            ejbA.shareAnAlbum(album, userLogin);
+        } catch (ReadException | SharingException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         }
@@ -104,14 +127,17 @@ public class AlbumFacadeREST{
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Album findAlbumByID(@PathParam("id") Integer id) {
+    public Album findAlbumByID(@PathParam("id") Integer id
+    ) {
+        Album album;
         try {
-            LOGGER.log(Level.INFO, "Finding the album {0} id= ", id);
-            return ejb.findAlbumByID(id);
+            LOGGER.log(Level.INFO, "Finding the album id= {0} ", id);
+            album = ejbA.findAlbumByID(id);
         } catch (ReadException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         }
+        return album;
     }
 
     /**
@@ -124,14 +150,17 @@ public class AlbumFacadeREST{
     @GET
     @Path("findMyAllAlbums/{userLogin}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public ArrayList<Album> findMyAllAlbums(@PathParam("userLogin") String userLogin) {
+    public ArrayList<Album> findMyAllAlbums(@PathParam("userLogin") String userLogin
+    ) {
+        ArrayList<Album> albums;
         try {
             LOGGER.log(Level.INFO, "Reading data for all user's Albums");
-            return ejb.findMyAllAlbums(userLogin);
+            albums = ejbA.findMyAllAlbums(userLogin);
         } catch (ReadException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         }
+        return albums;
     }
 
     /**
@@ -143,18 +172,22 @@ public class AlbumFacadeREST{
      * @param name A String that contains the words the user introduced.
      * @return An ArrayList of Albums that contains the albums the method found.
      */
-    /*@GET
-    @Path("/GET/Album{userLogin}{name}")
+    @GET
+    @Path("findMyAlbumsByName/{userLogin}/{name}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public ArrayList<Album> findMyAlbumsByName(@PathParam("userLogin") String userLogin, @PathParam("name") String name) {
+    public ArrayList<Album> findMyAlbumsByName(@PathParam("userLogin") String userLogin,
+            @PathParam("name") String name
+    ) {
+        ArrayList<Album> albums;
         try {
             LOGGER.log(Level.INFO, "Reading data for all user's Albums by name");
-            return ejb.findMyAlbumsByName(userLogin, name);
+            albums = ejbA.findMyAlbumsByName(userLogin, name);
         } catch (ReadException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         }
-    }*/
+        return albums;
+    }
 
     /**
      * GET method to get all user´s Albums data by date: it uses business method
@@ -162,21 +195,29 @@ public class AlbumFacadeREST{
      *
      * @param userLogin a string with the login from the user who is logged to
      * de app.
-     * @param date A Date that contains the date the User introduce.
+     * @param stringDate A String that contains the date the User introduce.
      * @return An ArrayList of Albums that contains the albums the method found.
      */
-    /*@GET
-    @Path("/GET/Album{user}{date}")
+    @GET
+    @Path("findMyAlbumsByDate/{userLogin}/{stringDate}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public ArrayList<Album> findMyAlbumsByDate(@PathParam("userLogin") String userLogin, @PathParam("date") Date date) {
+    public ArrayList<Album> findMyAlbumsByDate(@PathParam("userLogin") String userLogin,
+            @PathParam("stringDate") String stringDate
+    ) {
+        ArrayList<Album> albums = null;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         try {
             LOGGER.log(Level.INFO, "Reading data for all user's Albums by date");
-            return ejb.findMyAlbumsByDate(userLogin, date);
+            Date date = format.parse(stringDate);
+            albums = ejbA.findMyAlbumsByDate(userLogin, date);
         } catch (ReadException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
+        } catch (ParseException ex) {
+            Logger.getLogger(AlbumFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }*/
+        return albums;
+    }
 
     /**
      * GET method to get all user´s shared Albums data: it uses business method
@@ -186,18 +227,21 @@ public class AlbumFacadeREST{
      * de app.
      * @return An ArrayList of Albums that contains the albums the method found.
      */
-    /*@GET
-    @Path("/GET/Album{user}")
+    @GET
+    @Path("findMyAllSharedAlbums/{userLogin}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public ArrayList<Album> findMyAllSharedAlbums(@PathParam("userLogin") String userLogin) {
+    public ArrayList<Album> findMyAllSharedAlbums(@PathParam("userLogin") String userLogin
+    ) {
+        ArrayList<Album> albums;
         try {
             LOGGER.log(Level.INFO, "Reading data for all user's shared Albums");
-            return ejb.findMyAllSharedAlbums(userLogin);
+            albums = ejbA.findMyAllSharedAlbums(userLogin);
         } catch (ReadException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         }
-    }*/
+        return albums;
+    }
 
     /**
      * GET method to get all user´s shared Albums data by name: it uses business
@@ -208,18 +252,22 @@ public class AlbumFacadeREST{
      * @param name A String that contains the words the user introduced.
      * @return An ArrayList of Albums that contains the albums the method found.
      */
-    /*@GET
-    @Path("/GET/Album{user}{name}")
+    @GET
+    @Path("findMySharedAlbumsByName/{userLogin}/{name}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public ArrayList<Album> findMySharedAlbumsByName(@PathParam("userLogin") String userLogin, @PathParam("name") String name) {
+    public ArrayList<Album> findMySharedAlbumsByName(@PathParam("userLogin") String userLogin,
+            @PathParam("name") String name
+    ) {
+        ArrayList<Album> albums;
         try {
             LOGGER.log(Level.INFO, "Reading data for all user's shared Albums by name");
-            return ejb.findMySharedAlbumsByName(userLogin, name);
+            albums = ejbA.findMySharedAlbumsByName(userLogin, name);
         } catch (ReadException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         }
-    }*/
+        return albums;
+    }
 
     /**
      * GET method to get all user´s shared Albums data by date: it uses business
@@ -227,21 +275,29 @@ public class AlbumFacadeREST{
      *
      * @param userLogin a string with the login from the user who is logged to
      * de app.
-     * @param date A Date that contains the date the User introduce.
+     * @param stringDate A String that contains the date the User introduce.
      * @return An ArrayList of Albums that contains the albums the method found.
      */
-    /*@GET
-    @Path("/GET/Album{userLogin}{date}")
+    @GET
+    @Path("findMySharedAlbumsByDate/{userLogin}/{stringDate}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public ArrayList<Album> findMySharedAlbumsByDate(@PathParam("userLogin") String userLogin, @PathParam("date") Date date) {
+    public ArrayList<Album> findMySharedAlbumsByDate(@PathParam("userLogin") String userLogin,
+            @PathParam("stringDate") String stringDate
+    ) {
+        ArrayList<Album> albums = null;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         try {
             LOGGER.log(Level.INFO, "Reading data for all user's shared Albums by date");
-            return ejb.findMySharedAlbumsByDate(userLogin, date);
+            Date date = format.parse(stringDate);
+            albums = ejbA.findMySharedAlbumsByDate(userLogin, date);
         } catch (ReadException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
+        } catch (ParseException ex) {
+            Logger.getLogger(AlbumFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }*/
+        return albums;
+    }
 
     /**
      * GET method to get all user´s shared Albums data by album creator: it uses
@@ -252,35 +308,20 @@ public class AlbumFacadeREST{
      * @param creatorLogin A String that contains the words the user introduced.
      * @return An ArrayList of Albums that contains the albums the method found.
      */
-    /*@GET
-    @Path("/GET/Album{user}{creatorLogin}")
+    @GET
+    @Path("findMySharedAlbumsByCreator/{userLogin}/{creatorLogin}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public ArrayList<Album> findMySharedAlbumsByCreator(@PathParam("userLogin") String userLogin, @PathParam("creatorLogin") String creatorLogin) {
+    public ArrayList<Album> findMySharedAlbumsByCreator(@PathParam("userLogin") String userLogin,
+            @PathParam("creatorLogin") String creatorLogin
+    ) {
+        ArrayList<Album> albums = null;
         try {
             LOGGER.log(Level.INFO, "Reading data for all user's shared Albums by album creator");
-            return ejb.findMySharedAlbumsByCreator(userLogin, creatorLogin);
+            albums = ejbA.findMySharedAlbumsByCreator(userLogin, creatorLogin);
         } catch (ReadException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         }
-    }*/
-    
-    /**
-     * DELETE method to remove a shared Album from user's shareds: uses removeAlbum business logic method.
-     *
-     * @param userLogin a string with the login from the user who is logged to
-     * de app.
-     * @param album The Entity Album to be removed.
-     */
-    /*@DELETE
-    @Path("deleteShared{userLogin}{album}")
-    public void deleteFromSharedsAnAlbum(@PathParam("userLogin") String userLogin, @PathParam("album") Album album) {
-        try {
-            LOGGER.log(Level.INFO, "Deleting from shareds the album {0} id= ", album.getId());
-            ejb.deleteFromSharedsAnAlbum(userLogin, album);
-        } catch (DeleteException ex) {
-            LOGGER.severe(ex.getMessage());
-            throw new InternalServerErrorException(ex.getMessage());
-        }
-    }*/
+        return albums;
+    }
 }

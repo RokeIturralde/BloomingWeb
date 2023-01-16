@@ -8,11 +8,10 @@ package entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -32,17 +31,15 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "user", schema = "bloomingdb")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @XmlRootElement
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private String login;
     private String email;
     private String fullName;
-    private String login;
     private String password;
     @Enumerated(EnumType.STRING)
     private Privilege privilege;
@@ -68,7 +65,7 @@ public class User implements Serializable {
      * Relational field containing the list of albums shared with the User
      */
     @ManyToMany
-    @JoinTable(name = "user_sharedAlbums", schema = "bloomingdb", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+    @JoinTable(name = "user_sharedAlbums", schema = "bloomingdb", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "login"),
             inverseJoinColumns = @JoinColumn(name = "album_id", referencedColumnName = "id"))
     private List<Album> sharedAlbums;
 
@@ -79,14 +76,6 @@ public class User implements Serializable {
 
     public void setSharedAlbums(List<Album> sharedAlbums) {
         this.sharedAlbums = sharedAlbums;
-    }
-
-    public Integer getIdUser() {
-        return id;
-    }
-
-    public void setIdUser(Integer idUser) {
-        this.id = idUser;
     }
 
     public String getEmail() {
@@ -148,7 +137,7 @@ public class User implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (login != null ? login.hashCode() : 0);
         return hash;
     }
 
@@ -159,7 +148,7 @@ public class User implements Serializable {
             return false;
         }
         User other = (User) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.login == null && other.login != null) || (this.login != null && !this.login.equals(other.login))) {
             return false;
         }
         return true;
@@ -167,7 +156,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.User[ id=" + id + " ]";
+        return "entities.User[ id=" + login + " ]";
     }
 
 }
