@@ -6,19 +6,17 @@
 package service;
 
 import entities.Member;
-import entities.MembershipPlan;
+
 import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.FindMemberException;
 import exceptions.UpdateException;
 
-import java.lang.module.FindException;
+import java.sql.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -30,7 +28,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 
@@ -39,7 +36,7 @@ import java.util.logging.Logger;
  */
 @Stateless
 @Path("entities.member")
-public class MemberFacadeREST extends AbstractFacade<Member> {
+public class MemberFacadeREST {
 
     @EJB
     private IMemberManager ejb;
@@ -47,7 +44,6 @@ public class MemberFacadeREST extends AbstractFacade<Member> {
     private Logger LOGGER = Logger.getLogger(UserFacadeREST.class.getTypeName());
 
     @POST
-    @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(Member entity) {
         try {
@@ -81,7 +77,7 @@ public class MemberFacadeREST extends AbstractFacade<Member> {
     }
 
     @GET
-    @Path("{plan_id}")
+    @Path("findByPlan/{plan_id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List <Member> findMembersByPlan(@PathParam("plan_id") Integer planId) {
         try {
@@ -93,29 +89,28 @@ public class MemberFacadeREST extends AbstractFacade<Member> {
     }
 
     @GET
-    @Override
+    @Path("findByStartingDate/{memberStartingDate}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Member> findAll() {
-        return super.findAll();
+    public List<Member> findMembersByStartingDate(@PathParam("memberStartingDate") Date startingDate) {
+        try {
+            return ejb.findMembersByStartingDate(startingDate);
+        } catch (FindMemberException fme) {
+           LOGGER.severe(fme.getMessage());
+           throw new InternalServerErrorException(fme.getMessage());
+        }
     }
 
     @GET
-    @Path("{from}/{to}")
+    @Path("findByEndingDate/{memberEndingDate}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Member> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
+    public List<Member> findMembersByEndingDate(@PathParam("memberEndingDate") Date memberEndingDate) {
+        try {
+            return ejb.findMembersByEndingDate(memberEndingDate);
+        } catch (FindMemberException fme) {
+           LOGGER.severe(fme.getMessage());
+           throw new InternalServerErrorException(fme.getMessage());
+        }
     }
 
-    @GET
-    @Path("count")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String countREST() {
-        return String.valueOf(super.count());
-    }
-
-    @Override
-    protected EntityManager getEntityManager() {
-        return em;
-    }
 
 }
