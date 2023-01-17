@@ -98,30 +98,6 @@ public class EJBAlbumManager implements AlbumManagerLocal {
     }
 
     /**
-     * The method shares an existing album from the data store.
-     *
-     * @param album The Album entity object to be shared.
-     * @param userLogin A string with the login of the user to share with.
-     * @throws SharingException Thrown when any error or exception occurs during
-     * sharing.
-     */
-    @Override
-    public void shareAnAlbum(Album album, String userLogin) throws SharingException {
-        try {
-            
-            User userShareWith = em.find(User.class, userLogin);
-            album.getUsers().add(userShareWith);
-            if (!em.contains(album)) {
-                em.merge(album);
-            }
-            em.flush();
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "AlbumEJB ->  shareAnAlbum(Album album, String userLogin) {0}", e.getMessage());
-            throw new SharingException();
-        }
-    }
-
-    /**
      * The method finds an album which id is equals the id the User introduce
      * for a new album.
      *

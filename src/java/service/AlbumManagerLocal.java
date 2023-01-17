@@ -47,16 +47,6 @@ public interface AlbumManagerLocal {
     public void removeAlbum(Album album) throws DeleteException;
 
     /**
-     * The method shares an existing album from the data store.
-     *
-     * @param album The Album entity object to be shared.
-     * @param userLogin A string with the login of the user to share with.
-     * @throws SharingException Thrown when any error or exception occurs during
-     * sharing.
-     */
-    public void shareAnAlbum(Album album, String userLogin) throws SharingException;
-
-    /**
      * The method finds an album which id is equals the id the User introduce
      * for a new album.
      *

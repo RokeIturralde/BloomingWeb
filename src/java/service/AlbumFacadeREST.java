@@ -69,7 +69,7 @@ public class AlbumFacadeREST {
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void updateAlbum(Album album) {
         try {
-            LOGGER.log(Level.INFO, "Updating the album {0} id= ", album.getId());
+            LOGGER.log(Level.INFO, "Updating the album  id= {0}", album.getId());
             ejbA.updateAlbum(album);
         } catch (UpdateException ex) {
             LOGGER.severe(ex.getMessage());
@@ -87,31 +87,10 @@ public class AlbumFacadeREST {
     public void removeAlbum(@PathParam("id") Integer id) {
         Album album;
         try {
-            LOGGER.log(Level.INFO, "Deleting the album {0} id= ", id);
+            LOGGER.log(Level.INFO, "Deleting the album  id= {0}", id);
             album = ejbA.findAlbumByID(id);
             ejbA.removeAlbum(album);
         } catch (ReadException | DeleteException ex) {
-            LOGGER.severe(ex.getMessage());
-            throw new InternalServerErrorException(ex.getMessage());
-        }
-    }
-
-    /**
-     * PUT method to share an existing album from the data store: uses
-     * updateAlbum business logic method..
-     *
-     * @param albumId The id of the album to be shared.
-     * @param userLogin A string with the login of the user to share with.
-     */
-    @PUT
-    @Path("shareAnAlbum/{albumId}/{userLogin}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void shareAnAlbum(@PathParam("albumId") Integer albumId, @PathParam("userLogin") String userLogin) {
-        try {
-            LOGGER.log(Level.INFO, "Updating the album {0} id= ", albumId);
-            Album album = ejbA.findAlbumByID(albumId);
-            ejbA.shareAnAlbum(album, userLogin);
-        } catch (ReadException | SharingException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         }
