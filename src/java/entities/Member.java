@@ -14,10 +14,9 @@ import javax.persistence.NamedQuery;
 /**
  * @author dani
  */
-
  @NamedQueries({
     @NamedQuery(
-            name = "findMembersByPlan", query = "SELECT m FROM Member m WHERE  m.plan=:plan"
+            name = "findMembersByPlan", query = "SELECT m FROM Member m WHERE  m.plan_id=:plan"
     )
     ,
     @NamedQuery(

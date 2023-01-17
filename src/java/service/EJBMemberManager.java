@@ -73,10 +73,10 @@ public class EJBMemberManager implements IMemberManager {
       }
 
       @Override
-      public List<Member> findMembersByPlan(MembershipPlan membershipPlan) throws FindMemberException {
+      public List<Member> findMembersByPlan(Integer planId) throws FindMemberException {
             try {
                   return em.createNamedQuery("findMembersByPlan")
-                        .setParameter("plan", membershipPlan)
+                        .setParameter("plan", planId)
                               .getResultList();
             } catch (Exception e) {
                   throw new FindMemberException(e.getMessage());

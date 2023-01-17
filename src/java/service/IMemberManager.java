@@ -4,7 +4,6 @@ import java.sql.Date;
 import java.util.List;
 
 import entities.Member;
-import entities.MembershipPlan;
 import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.FindMemberException;
@@ -20,7 +19,7 @@ public interface IMemberManager {
 
     public Member findMemberByLogin(String login) throws FindMemberException;
 
-    public List <Member> findMembersByPlan(MembershipPlan membershipPlan) throws FindMemberException;
+    public List <Member> findMembersByPlan(Integer planID) throws FindMemberException;
 
     public List <Member> findMembersByEndingDate(Date endingDate) throws FindMemberException;
 

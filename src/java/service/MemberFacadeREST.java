@@ -6,13 +6,23 @@
 package service;
 
 import entities.Member;
+import entities.MembershipPlan;
+import exceptions.CreateException;
+import exceptions.DeleteException;
+import exceptions.FindMemberException;
+import exceptions.UpdateException;
+
+import java.lang.module.FindException;
 import java.util.List;
+
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -20,46 +30,66 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import java.util.List;
+import java.util.logging.Logger;
+
+
 /**
- *
- * @author 2dam
+ * @author dani
  */
 @Stateless
 @Path("entities.member")
 public class MemberFacadeREST extends AbstractFacade<Member> {
 
-    @PersistenceContext(unitName = "BloomingWebPU")
-    private EntityManager em;
+    @EJB
+    private IMemberManager ejb;
 
-    public MemberFacadeREST() {
-        super(Member.class);
-    }
+    private Logger LOGGER = Logger.getLogger(UserFacadeREST.class.getTypeName());
 
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(Member entity) {
-        super.create(entity);
+        try {
+            ejb.createMember(entity);
+        } catch (CreateException ce) {
+            LOGGER.severe(ce.getMessage());
+            throw new InternalServerErrorException(ce.getMessage());
+        }
     }
 
     @PUT
-    @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") String id, Member entity) {
-        super.edit(entity);
+    public void edit(Member entity) {
+        try {
+            ejb.updateMember(entity);
+        } catch (UpdateException ue) {
+            LOGGER.severe(ue.getMessage());
+            throw new InternalServerErrorException(ue.getMessage());
+        }
     }
 
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") String id) {
-        super.remove(super.find(id));
+        try {
+            ejb.removeMember(id);
+        } catch (DeleteException de) {
+            LOGGER.severe(de.getMessage());
+            throw new InternalServerErrorException(de.getMessage());
+        }
     }
 
     @GET
-    @Path("{id}")
+    @Path("{plan_id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Member find(@PathParam("id") String id) {
-        return super.find(id);
+    public List <Member> findMembersByPlan(@PathParam("plan_id") Integer planId) {
+        try {
+            return ejb.findMembersByPlan(planId);
+        } catch (FindMemberException fe) {
+            LOGGER.severe(fe.getMessage());
+            throw new InternalServerErrorException(fe.getMessage());
+        }
     }
 
     @GET
@@ -87,5 +117,5 @@ public class MemberFacadeREST extends AbstractFacade<Member> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }

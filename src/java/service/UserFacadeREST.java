@@ -1,5 +1,6 @@
 package service;
 
+import entities.Status;
 import entities.User;
 import exceptions.UpdateException;
 
@@ -11,9 +12,6 @@ import exceptions.DeleteException;
 import exceptions.FindUserException;
 
 import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -24,8 +22,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
-import org.apache.tools.ant.taskdefs.Delete;
 
 
 /**
@@ -74,9 +70,9 @@ public class UserFacadeREST {
     }
 
     @GET
-    @Path("{id}")
+    @Path("findByName/{name}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List <User> findUserByName(@PathParam("id") String name) {
+    public List <User> findUserByName(@PathParam("name") String name) {
         try {
             return ejb.findUsersByName(name);
         } catch (FindUserException fue) {
@@ -86,48 +82,38 @@ public class UserFacadeREST {
     }
 
     @GET
-    @Path("{id}")
+    @Path("findByEmail/{email}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public User findUserByEmail(@PathParam("id") String id) {
-        return super.find(id);
+    public User findUserByEmail(@PathParam("email") String email) {
+        try {
+            return ejb.findUserByEmail(email);
+        } catch (FindUserException fue) {
+            LOGGER.severe(fue.getMessage());
+            throw new InternalServerErrorException(fue.getMessage());
+        }
     }
 
     @GET
-    @Path("{id}")
+    @Path("findByStatus/{status}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List <User> findUserByStatus(@PathParam("id") String id) {
-        return super.find(id);
+    public List <User> findUserByStatus(@PathParam("status") Status status) {
+        try {
+            return ejb.findUsersByStatus(status);
+        } catch (FindUserException fue) {
+            LOGGER.severe(fue.getMessage());
+            throw new InternalServerErrorException(fue.getMessage());
+        }
     }
 
     @GET
-    @Path("{id}")
+    @Path("findByLogin/{login}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public User findUserById(@PathParam("id") String id) {
-        return super.find(id);
-    }
-
-    @GET
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<User> findAll() {
-        return super.findAll();
-    }
-
-    @GET
-    @Path("{from}/{to}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<User> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
-    }
-
-    @GET
-    @Path("count")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String countREST() {
-        return String.valueOf(super.count());
-    }
-
-    protected EntityManager getEntityManager() {
-        return em;
-    }
-    
+    public User findUserById(@PathParam("login") String login) {
+        try {
+            return ejb.findUserByLogin(login);
+        } catch (FindUserException fue) {
+            LOGGER.severe(fue.getMessage());
+            throw new InternalServerErrorException(fue.getMessage());
+        }
+    }    
 }
