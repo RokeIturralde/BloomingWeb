@@ -6,7 +6,7 @@
 package service;
 
 import entities.Member;
-
+import entities.MembershipPlan;
 import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.FindMemberException;
@@ -77,11 +77,11 @@ public class MemberFacadeREST {
     }
 
     @GET
-    @Path("findByPlan/{plan_id}")
+    @Path("findByPlan/{plan}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List <Member> findMembersByPlan(@PathParam("plan_id") Integer planId) {
+    public List <Member> findMembersByPlan(@PathParam("plan_id") MembershipPlan plan) {
         try {
-            return ejb.findMembersByPlan(planId);
+            return ejb.findMembersByPlan(plan);
         } catch (FindMemberException fe) {
             LOGGER.severe(fe.getMessage());
             throw new InternalServerErrorException(fe.getMessage());
