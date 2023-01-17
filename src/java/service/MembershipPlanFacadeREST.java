@@ -6,11 +6,13 @@
 package service;
 
 import entities.MembershipPlan;
+import entities.User;
 import java.util.List;
 import javax.ejb.EJB;
 import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.FindPlanException;
+import exceptions.FindUserException;
 import exceptions.UpdateException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,61 +40,65 @@ public class MembershipPlanFacadeREST {
 
     /**
      * Create plan
-     * @param entity 
+     *
+     * @param entity
      */
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(MembershipPlan entity) {
-        try{
-           ejbM.createPlan(entity); 
-        } catch(CreateException ex){
+        try {
+            ejbM.createPlan(entity);
+        } catch (CreateException ex) {
             Logger.getLogger(MembershipPlanFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }
 
     /**
      * Update plan
+     *
      * @param id
-     * @param entity 
+     * @param entity
      */
     @PUT
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void edit(@PathParam("id") Integer id, MembershipPlan entity) {
-        try{
+        try {
             ejbM.updatePlan(entity);
-        } catch(UpdateException ex){
+        } catch (UpdateException ex) {
             Logger.getLogger(MembershipPlanFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     /**
      * Delete plan
-     * @param id 
+     *
+     * @param id
      */
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Integer id) {
-        try{
+        try {
             ejbM.removePlan(id);
-        } catch(DeleteException ex){
-             Logger.getLogger(MembershipPlanFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (DeleteException ex) {
+            Logger.getLogger(MembershipPlanFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     /**
      * Find plan by id
+     *
      * @param id
-     * @return 
+     * @return
      */
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public MembershipPlan find(@PathParam("id") Integer id) {
         MembershipPlan plan = null;
-        try{
+        try {
             plan = ejbM.findPlanById(id);
-        } catch (FindPlanException ex){
+        } catch (FindPlanException ex) {
             Logger.getLogger(MembershipPlanFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
         return plan;
@@ -100,24 +106,26 @@ public class MembershipPlanFacadeREST {
 
     /**
      * Find all plans
-     * @return 
+     *
+     * @return
      */
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<MembershipPlan> findAll() {
         List<MembershipPlan> plans = null;
-        try{
+        try {
             plans = ejbM.findAllPlans();
-        } catch(FindPlanException ex){
-                Logger.getLogger(MembershipPlanFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (FindPlanException ex) {
+            Logger.getLogger(MembershipPlanFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
         return plans;
     }
-    
+
     /**
      * Find plans by name
+     *
      * @param name
-     * @return 
+     * @return
      */
     @GET
     @Path("findByName/{name}")
@@ -131,43 +139,56 @@ public class MembershipPlanFacadeREST {
         }
         return plans;
     }
-    
+
     /**
      * Find plans by duration
+     *
      * @param duration
-     * @return 
+     * @return
      */
     @GET
     @Path("duration/{duration}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<MembershipPlan> findPlanByDuration(@PathParam("duration") String duration) {
+    public List<MembershipPlan> findPlanByDuration(@PathParam("duration") Integer duration) {
         List<MembershipPlan> plans = null;
-        try{
+        try {
             plans = ejbM.findPlanByDuration(duration);
-        } catch(FindPlanException ex){
+        } catch (FindPlanException ex) {
             Logger.getLogger(MembershipPlanFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
         return plans;
     }
-    
+
     /**
      * Find plans by price
+     *
      * @param price
-     * @return 
+     * @return
      */
     @GET
     @Path("price/{price}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<MembershipPlan> findPlanByPrice(@PathParam("price") Float price) {
         List<MembershipPlan> plans = null;
-        try{
+        try {
             plans = ejbM.findPlanByPrice(price);
-        } catch(FindPlanException ex){
+        } catch (FindPlanException ex) {
             Logger.getLogger(MembershipPlanFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
         return plans;
     }
 
-    
+    @GET
+    @Path("findByPlan/{id}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<User> listMembersByPlan(@PathParam("id") int id) {
+        List<User> users = null;
+        try {
+            users = ejbM.listMembersByPlan(id);
+        } catch (FindUserException ex) {
+            Logger.getLogger(ContentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return users;
+    }
 
 }

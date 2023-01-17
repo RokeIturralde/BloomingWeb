@@ -23,17 +23,24 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author 2dam
  */
 @NamedQueries({
+    @NamedQuery(
+            name = "findAllPlans", query = "SELECT M FROM MembershipPlan M")
+    ,
         @NamedQuery(
-            name="findAllPlans", query="SELECT M FROM MembershipPlan M"),
+            name = "findPlanByPrice", query = "SELECT M FROM MembershipPlan M WHERE M.price<=:planPrice")
+    ,
         @NamedQuery(
-            name="findPlanByPrice", query="SELECT M FROM MembershipPlan M WHERE M.price<=:planPrice"),
+            name = "findPlanByDuration", query = "SELECT M FROM MembershipPlan M WHERE M.duration<=:planDuration")
+    ,
         @NamedQuery(
-            name="findPlanByDuration", query="SELECT M FROM MembershipPlan M WHERE M.duration=:planDuration"),
+            name = "findPlanByName", query = "SELECT M FROM MembershipPlan M WHERE M.name=:planName")
+    ,
         @NamedQuery(
-            name="findPlanByName", query="SELECT M FROM MembershipPlan M WHERE M.name=:planName"),
+            name = "findPlanById", query = "SELECT M FROM MembershipPlan M WHERE M.id=:id")
+    ,
         @NamedQuery(
-            name="findPlanById", query="SELECT M FROM MembershipPlan M WHERE M.id=:id")
-    })
+            name = "listMembersByPlan", query = "SELECT m FROM Member m inner join m.plan p where p.id=:planId")
+})
 
 @Entity
 @Table(name = "membershipPlan", schema = "bloomingdb")
@@ -46,7 +53,7 @@ public class MembershipPlan implements Serializable {
     private Integer id;
     private Integer albumLimit;
     private String description;
-    private String duration;
+    private Integer duration;
     /**
      * Relational field containing the members subscribed to the plan
      */
@@ -80,11 +87,11 @@ public class MembershipPlan implements Serializable {
         this.description = description;
     }
 
-    public String getDuration() {
+    public Integer getDuration() {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(Integer duration) {
         this.duration = duration;
     }
 
@@ -145,9 +152,5 @@ public class MembershipPlan implements Serializable {
     public String toString() {
         return "entities.MembershipPlan[ id=" + id + " ]";
     }
-    
-    
-    
-    
 
 }
