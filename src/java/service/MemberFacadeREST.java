@@ -30,7 +30,6 @@ import javax.ws.rs.core.MediaType;
 
 import java.util.logging.Logger;
 
-
 /**
  * @author dani
  */
@@ -111,6 +110,4 @@ public class MemberFacadeREST {
            throw new InternalServerErrorException(fme.getMessage());
         }
     }
-
-
 }
