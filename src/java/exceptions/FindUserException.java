@@ -7,24 +7,24 @@ package exceptions;
 
 /**
  *
- * @author Roke
+ * @author 2dam
  */
-public class DeleteException extends Exception {
+public class FindUserException extends Exception {
 
     /**
-     * Creates a new instance of <code>DeleteException</code> without detail
+     * Creates a new instance of <code>FindUserException</code> without detail
      * message.
      */
-    public DeleteException() {
+    public FindUserException() {
     }
 
     /**
-     * Constructs an instance of <code>DeleteException</code> with the specified
-     * detail message.
+     * Constructs an instance of <code>FindUserException</code> with the
+     * specified detail message.
      *
      * @param msg the detail message.
      */
-    public DeleteException(String msg) {
+    public FindUserException(String msg) {
         super(msg);
     }
 }
