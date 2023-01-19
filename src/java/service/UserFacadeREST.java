@@ -106,9 +106,9 @@ public class UserFacadeREST {
     }
 
     @GET
-    @Path("findByLogin/{login}")
+    @Path("findUseraByLogin/{login}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public User findUserById(@PathParam("login") String login) {
+    public User findUserByLogin(@PathParam("login") String login) {
         try {
             return ejb.findUserByLogin(login);
         } catch (FindUserException fue) {

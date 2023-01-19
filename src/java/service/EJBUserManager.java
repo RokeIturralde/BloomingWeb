@@ -91,7 +91,7 @@ public class EJBUserManager implements IUserManager {
             return User.class.cast(
                 em.createNamedQuery("findUserByEmail")
                     .setParameter("userEmail", email)
-                        .getFirstResult());
+                        .getSingleResult());
         } catch (Exception e) {
             throw new FindUserException(e.getMessage());
         }
@@ -102,7 +102,7 @@ public class EJBUserManager implements IUserManager {
     public List<User> findUsersByName(String name) throws FindUserException {
         try {
             return em.createNamedQuery("findUserByName")
-                    .setParameter("userName", name)
+                    .setParameter("userName", "%" + name + "%")
                         .getResultList();
         } catch (Exception e) {
             throw new FindUserException(e.getMessage());

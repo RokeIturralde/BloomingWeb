@@ -1,6 +1,6 @@
 package service;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -52,17 +52,6 @@ public class EJBMemberManager implements IMemberManager {
             }            
       }
 
-
-      @Override
-      public void removeMember(String login) throws DeleteException {
-            try {
-                  if (em.contains(findMemberByLogin(login)))
-                        em.remove(em.find(Member.class, login));
-            } catch (Exception e) {
-                  throw new DeleteException(e.getMessage());
-            }
-      }
-
       @Override
       public Member findMemberByLogin(String login) throws FindMemberException {
             try {
@@ -73,7 +62,7 @@ public class EJBMemberManager implements IMemberManager {
       }
 
       @Override
-      public List<Member> findMembersByPlan(MembershipPlan plan) throws FindMemberException {
+      public List<Member> findMembersByPlan(Integer plan) throws FindMemberException {
             try {
                   return em.createNamedQuery("findMembersByPlan")
                         .setParameter("plan", plan)
@@ -103,8 +92,20 @@ public class EJBMemberManager implements IMemberManager {
             } catch (Exception e) {
                   throw new FindMemberException(e.getMessage());
             }
+      }     
+
+      @Override
+      public List <Member> getEveryUser() throws FindMemberException {
+            try {
+                  return em.createNamedQuery("getEveryUser").getResultList();
+            } catch (Exception e) {
+                  throw new FindMemberException(e.getMessage());
+            }
       }
 
-     
+    @Override
+    public void removeMember(String login) throws DeleteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }

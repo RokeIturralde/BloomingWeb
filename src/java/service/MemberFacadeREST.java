@@ -12,7 +12,7 @@ import exceptions.DeleteException;
 import exceptions.FindMemberException;
 import exceptions.UpdateException;
 
-import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -78,7 +78,7 @@ public class MemberFacadeREST {
     @GET
     @Path("findByPlan/{plan}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List <Member> findMembersByPlan(@PathParam("plan_id") MembershipPlan plan) {
+    public List <Member> findMembersByPlan(@PathParam("plan") Integer plan) {
         try {
             return ejb.findMembersByPlan(plan);
         } catch (FindMemberException fe) {
@@ -90,9 +90,39 @@ public class MemberFacadeREST {
     @GET
     @Path("findByStartingDate/{memberStartingDate}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Member> findMembersByStartingDate(@PathParam("memberStartingDate") Date startingDate) {
+    public List<Member> findMembersByStartingDate(@PathParam("memberStartingDate") String startingDate) {
         try {
-            return ejb.findMembersByStartingDate(startingDate);
+            return ejb.findMembersByStartingDate(new SimpleDateFormat("yyyy-MM-dd").parse(startingDate));
+        } catch (FindMemberException fme) {
+           LOGGER.severe(fme.getMessage());
+           throw new InternalServerErrorException(fme.getMessage());
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            return null;
+        }
+    }
+
+    @GET
+    @Path("findByEndingDate/{memberEndingDate}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Member> findMembersByEndingDate(@PathParam("memberEndingDate") String endingDate) {
+        try {
+            return ejb.findMembersByEndingDate(new SimpleDateFormat("yyyy-MM-dd").parse(endingDate));
+        } catch (FindMemberException fme) {
+           LOGGER.severe(fme.getMessage());
+           throw new InternalServerErrorException(fme.getMessage());
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            return null;
+        }
+    }
+
+    @GET
+    @Path("findMemberByLogin/{login}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Member findMemberByLogin(@PathParam("login") String login) {
+        try {
+            return ejb.findMemberByLogin(login);
         } catch (FindMemberException fme) {
            LOGGER.severe(fme.getMessage());
            throw new InternalServerErrorException(fme.getMessage());
@@ -100,14 +130,13 @@ public class MemberFacadeREST {
     }
 
     @GET
-    @Path("findByEndingDate/{memberEndingDate}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Member> findMembersByEndingDate(@PathParam("memberEndingDate") Date memberEndingDate) {
+    public List <Member> getEveryUser() {
         try {
-            return ejb.findMembersByEndingDate(memberEndingDate);
+            return ejb.getEveryUser();
         } catch (FindMemberException fme) {
-           LOGGER.severe(fme.getMessage());
-           throw new InternalServerErrorException(fme.getMessage());
+            LOGGER.severe(fme.getMessage());
+            throw new InternalServerErrorException(fme.getMessage());
         }
     }
 }

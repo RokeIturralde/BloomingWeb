@@ -4,30 +4,35 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 
 /**
  * @author dani
  */
  @NamedQueries({
     @NamedQuery(
-            name = "findMembersByPlan", query = "SELECT m FROM Member m WHERE m.plan=:plan"
+            name = "findMembersByPlan", query = "SELECT u FROM User u WHERE u.privilege='MEMBER' AND u.plan=:plan"
     )
     ,
     @NamedQuery(
-            name = "findMembersByEndingDate", query = "SELECT m FROM Member m WHERE m.memberEndingDate=:memberEndingDate"
+            name = "findMembersByEndingDate", query = "SELECT u FROM User u WHERE u.privilege='MEMBER' AND u.memberEndingDate=:memberEndingDate"
     )
     ,
     @NamedQuery(
-            name = "findMembersByStartingDate", query = "SELECT m FROM Member m WHERE m.memberStartingDate=:memberStartingDate"
+            name = "findMembersByStartingDate", query = "SELECT u FROM User u WHERE u.privilege='MEMBER' AND u.memberStartingDate=:memberStartingDate"
+    ),
+    @NamedQuery(
+            name = "getEveryUser", query = "SELECT u FROM User u"
     )
+    
+    // query that returns every user as users
+    
 })
-
 @Entity
 @Table(name = "member", schema = "bloomingdb")
 @XmlRootElement
