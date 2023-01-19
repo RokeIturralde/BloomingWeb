@@ -5,19 +5,18 @@
  */
 package entities;
 
-import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author 2dam
+ * @author Roke
  */
 @Entity
 @Table(name = "customText", schema = "bloomingdb")
 @XmlRootElement
-public class CustomText extends Content implements Serializable {
+public class CustomText extends Content {
 
     private static final long serialVersionUID = 1L;
     private String text;
