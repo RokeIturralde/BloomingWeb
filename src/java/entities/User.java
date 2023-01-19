@@ -38,23 +38,7 @@ import javax.persistence.NamedQuery;
     ,
     @NamedQuery(
             name = "findUserByStatus", query = "SELECT u FROM User u WHERE u.status=:userStatus"
-    ),
-
-    /**
-     * todos los que 
-     */
-    /*
-    @NamedQuery(
-            name = "findMembersByPlan", query = "SELECT u FROM User u WHERE u.privilege='MEMBER' AND u.plan=:plan"
     )
-    ,
-    @NamedQuery(
-            name = "findMembersByEndingDate", query = "SELECT u FROM User u WHERE u.privilege='MEMBER' AND u.memberEndingDate=:memberEndingDate"
-    )
-    ,
-    @NamedQuery(
-            name = "findMembersByStartingDate", query = "SELECT u FROM User u WHERE u.privilege='MEMBER' AND u.memberStartingDate=:memberStartingDate"
-    )*/
 })
 
 @Entity

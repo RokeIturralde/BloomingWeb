@@ -20,14 +20,11 @@ import javax.xml.bind.annotation.XmlRootElement;
     )
     ,
     @NamedQuery(
-            name = "findMembersByEndingDate", query = "SELECT u FROM User u WHERE u.privilege='MEMBER' AND u.memberEndingDate=:memberEndingDate"
+            name = "getEveryUser", query = "SELECT u FROM User u"
     )
     ,
     @NamedQuery(
-            name = "findMembersByStartingDate", query = "SELECT u FROM User u WHERE u.privilege='MEMBER' AND u.memberStartingDate=:memberStartingDate"
-    ),
-    @NamedQuery(
-            name = "getEveryUser", query = "SELECT u FROM User u"
+            name = "getEveryMember", query = "SELECT u FROM User u WHERE u.privilege='MEMBER'"
     )
     
     // query that returns every user as users

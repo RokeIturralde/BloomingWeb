@@ -7,19 +7,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import entities.Member;
-import entities.MembershipPlan;
-import entities.Privilege;
-import entities.Status;
-import entities.User;
 import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.FindMemberException;
-import exceptions.FindUserException;
 import exceptions.UpdateException;
-
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 /**
  * @author dani
@@ -70,34 +61,21 @@ public class EJBMemberManager implements IMemberManager {
             } catch (Exception e) {
                   throw new FindMemberException(e.getMessage());
             }
-      }
-
-      @Override
-      public List<Member> findMembersByEndingDate(Date endingDate) throws FindMemberException {
-            try {
-                  return em.createNamedQuery("findMembersByEndingDate")
-                        .setParameter("memberEndingDate", endingDate)
-                              .getResultList();
-            } catch (Exception e) {
-                  throw new FindMemberException(e.getMessage());
-            }
-      }
-
-      @Override
-      public List<Member> findMembersByStartingDate(Date startingDate) throws FindMemberException {
-            try {
-                  return em.createNamedQuery("findMembersByStartingDate")
-                        .setParameter("memberStartingDate", startingDate)
-                              .getResultList();
-            } catch (Exception e) {
-                  throw new FindMemberException(e.getMessage());
-            }
-      }     
+      } 
 
       @Override
       public List <Member> getEveryUser() throws FindMemberException {
             try {
                   return em.createNamedQuery("getEveryUser").getResultList();
+            } catch (Exception e) {
+                  throw new FindMemberException(e.getMessage());
+            }
+      }
+
+      @Override
+      public List <Member> getEveryMember() throws FindMemberException {
+            try {
+                  return em.createNamedQuery("getEveryMember").getResultList();
             } catch (Exception e) {
                   throw new FindMemberException(e.getMessage());
             }

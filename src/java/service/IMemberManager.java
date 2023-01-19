@@ -1,6 +1,5 @@
 package service;
 
-import java.util.Date;
 import java.util.List;
 
 import entities.Member;
@@ -21,9 +20,7 @@ public interface IMemberManager {
 
     public List <Member> findMembersByPlan(Integer plan) throws FindMemberException;
 
-    public List <Member> findMembersByEndingDate(Date endingDate) throws FindMemberException;
-
-    public List <Member> findMembersByStartingDate(Date startingDate) throws FindMemberException;
+    public List <Member> getEveryMember() throws FindMemberException;
 
     public List <Member> getEveryUser() throws FindMemberException;
 }

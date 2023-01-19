@@ -1,18 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package service;
 
 import entities.Member;
-import entities.MembershipPlan;
 import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.FindMemberException;
 import exceptions.UpdateException;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -81,39 +74,9 @@ public class MemberFacadeREST {
     public List <Member> findMembersByPlan(@PathParam("plan") Integer plan) {
         try {
             return ejb.findMembersByPlan(plan);
-        } catch (FindMemberException fe) {
-            LOGGER.severe(fe.getMessage());
-            throw new InternalServerErrorException(fe.getMessage());
-        }
-    }
-
-    @GET
-    @Path("findByStartingDate/{memberStartingDate}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Member> findMembersByStartingDate(@PathParam("memberStartingDate") String startingDate) {
-        try {
-            return ejb.findMembersByStartingDate(new SimpleDateFormat("yyyy-MM-dd").parse(startingDate));
         } catch (FindMemberException fme) {
-           LOGGER.severe(fme.getMessage());
-           throw new InternalServerErrorException(fme.getMessage());
-        } catch (Exception e) {
-            LOGGER.severe(e.getMessage());
-            return null;
-        }
-    }
-
-    @GET
-    @Path("findByEndingDate/{memberEndingDate}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Member> findMembersByEndingDate(@PathParam("memberEndingDate") String endingDate) {
-        try {
-            return ejb.findMembersByEndingDate(new SimpleDateFormat("yyyy-MM-dd").parse(endingDate));
-        } catch (FindMemberException fme) {
-           LOGGER.severe(fme.getMessage());
-           throw new InternalServerErrorException(fme.getMessage());
-        } catch (Exception e) {
-            LOGGER.severe(e.getMessage());
-            return null;
+            LOGGER.severe(fme.getMessage());
+            throw new InternalServerErrorException(fme.getMessage());
         }
     }
 
@@ -130,10 +93,23 @@ public class MemberFacadeREST {
     }
 
     @GET
+    @Path("getEveryMember")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List <Member> getEveryUser() {
         try {
             return ejb.getEveryUser();
+        } catch (FindMemberException fme) {
+            LOGGER.severe(fme.getMessage());
+            throw new InternalServerErrorException(fme.getMessage());
+        }
+    }
+
+    @GET
+    @Path("getEveryMember")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Member> getEveryMember() {
+        try {
+            return ejb.getEveryMember();
         } catch (FindMemberException fme) {
             LOGGER.severe(fme.getMessage());
             throw new InternalServerErrorException(fme.getMessage());
