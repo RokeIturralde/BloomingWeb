@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author 2dam
  */
 @Entity
-@Table(name = "user", schema = "bloomingdb")
+@Table(name = "member", schema = "bloomingdb")
 @XmlRootElement
 public class Member extends User implements Serializable {
 

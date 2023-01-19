@@ -7,23 +7,24 @@ package exceptions;
 
 /**
  *
- * @author Roke
+ * @author 2dam
  */
-public class CreateException extends Exception {
+public class ReadException extends Exception {
 
     /**
-     * Creates a new instance of <code>CreateException</code> without detail
+     * Creates a new instance of <code>ReadException</code> without detail
      * message.
      */
-    public CreateException() {
+    public ReadException() {
     }
 
     /**
-     * Constructs an instance of <code>CreateException</code> with the specified
+     * Constructs an instance of <code>ReadException</code> with the specified
      * detail message.
      *
      * @param msg the detail message.
      */
-    public CreateException(String msg) {
+    public ReadException(String msg) {
         super(msg);
     }
+}
