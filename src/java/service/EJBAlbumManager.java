@@ -5,6 +5,7 @@
  */
 package service;
 
+import exceptions.NotTheCreatorException;
 import entities.Album;
 import entities.User;
 import exceptions.*;
@@ -13,7 +14,6 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -45,6 +45,8 @@ public class EJBAlbumManager implements AlbumManagerLocal {
      */
     @Override
     public void createAlbum(Album album) throws CreateException {
+        Album bdAlbum;
+
         try {
             User creator = album.getCreator();
             em.createNamedQuery("findAlbumByName").setParameter("creator", creator).setParameter("name", album.getName()).getSingleResult();
@@ -73,6 +75,8 @@ public class EJBAlbumManager implements AlbumManagerLocal {
             }
             em.flush();
         } catch (Exception e) {
+
+            LOGGER.log(Level.SEVERE, "AlbumEJB ->  updateAlbum(Album album) {0}", e.getMessage());
             throw new UpdateException(e.getMessage());
         }
     }
@@ -89,27 +93,10 @@ public class EJBAlbumManager implements AlbumManagerLocal {
         try {
             em.remove(em.merge(album));
         } catch (Exception e) {
-            throw new DeleteException(e.getMessage());
-        }
-    }
 
-    /**
-     * The method shares an existing album from the data store.
-     *
-     * @param album The Album entity object to be shared.
-     * @param login The user's login you want to share the album to
-     * @throws SharingException Thrown when any error or exception occurs during
-     * sharing.
-     */
-    @Override
-    public void shareAnAlbum(Album album, String login) throws SharingException {
-        try {
-            if (!em.contains(album)) {
-                em.merge(album);
-            }
-            em.flush();
-        } catch (Exception e) {
-            throw new SharingException(e.getMessage());
+            LOGGER.log(Level.SEVERE, "AlbumEJB ->  removeAlbum(Album album) {0}", e.getMessage());
+            throw new DeleteException(e.getMessage());
+
         }
     }
 
@@ -174,7 +161,7 @@ public class EJBAlbumManager implements AlbumManagerLocal {
         User user;
         try {
             user = em.find(User.class, userLogin);
-            myAlbums = new ArrayList<>(em.createNamedQuery("findMyAlbumsByName").setParameter("creator", user).setParameter("name", name).getResultList());
+            myAlbums = new ArrayList<>(em.createNamedQuery("findMyAlbumsByName").setParameter("creator", user).setParameter("name", "%" + name + "%").getResultList());
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "AlbumEJB ->  findMyAlbumsByName(User user, String name) {0}", e.getMessage());
         }
@@ -247,7 +234,8 @@ public class EJBAlbumManager implements AlbumManagerLocal {
         User user;
         try {
             user = em.find(User.class, userLogin);
-            sharedAlbums = new ArrayList<>(em.createNamedQuery("findMySharedAlbumsByName").setParameter("user", user).setParameter("userLogin", user.getLogin()).setParameter("name", name).getResultList());
+            sharedAlbums = new ArrayList<>(em.createNamedQuery("findMySharedAlbumsByName").setParameter("user", user).setParameter("userLogin", user.getLogin()).setParameter("name", "%" + name + "%").getResultList());
+
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "AlbumEJB ->  findMySharedAlbumsByName(User user, String name) {0}", e.getMessage());
         }
@@ -285,42 +273,26 @@ public class EJBAlbumManager implements AlbumManagerLocal {
      *
      * @param userLogin a string with the login from the user who is logged to
      * de app.
-     * @param creatorLogin A String that contains the words the user introduced.
+
+     * @param creatorLogin An String with the login of the creator of the album.
+
      * @return An ArrayList of Albums that contains the albums that the method
      * found.
      * @throws ReadException Thrown when any error or exception occurs during
      * reading.
      */
-    /*@Override
-    public ArrayList<Album> findMySharedAlbumsByCreator(User user,String creatorLogin) throws ReadException {
+
+    @Override
+    public ArrayList<Album> findMySharedAlbumsByCreator(String userLogin, String creatorLogin) throws ReadException {
         ArrayList<Album> sharedAlbums = null;
         User user;
         try {
-            user = em.find(User.class, userLogin);
-            sharedAlbums = new ArrayList<>(em.createNamedQuery("findMySharedAlbumsByCreator").setParameter("user", user).setParameter("userLogin", user.getLogin()).setParameter("creatorLogin", creatorLogin).getResultList());
+            user = em.find(User.class, creatorLogin);
+            sharedAlbums = new ArrayList<>(em.createNamedQuery("findMySharedAlbumsByCreator").setParameter("creator", user).setParameter("userLogin", userLogin).getResultList());
+
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "AlbumEJB ->  findMySharedAlbumsByCreator(User user, String login) {0}", e.getMessage());
         }
         return sharedAlbums;
-    }*/
-    /**
-     * This method delete an album that someone shared you, it only will be
-     * deleted from your shared table, you can´t delete it literally
-     *
-     * @param userLogin a string with the login from the user who is logged to
-     * de app.
-     * @param album the Entity album that is a shared album you want to delete
-     * @throws exceptions.DeleteException
-     */
-    @Override
-    public void removeFromSharedsAnAlbum(String userLogin, Album album) throws DeleteException {
-        try {
-            int deletedCount = em.createNamedQuery("removeFromSharedsAnAlbum").setParameter("userLogin", userLogin).setParameter("idAlbum", album.getId()).executeUpdate();
-            if (deletedCount != 1) {
-                throw new DeleteException();
-            }
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "AlbumEJB ->  removeFromSharedsAnAlbum(User user, String login) {0}", e.getMessage());
-        }
     }
 }

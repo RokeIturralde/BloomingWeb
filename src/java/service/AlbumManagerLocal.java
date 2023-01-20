@@ -47,16 +47,6 @@ public interface AlbumManagerLocal {
     public void removeAlbum(Album album) throws DeleteException;
 
     /**
-     * The method shares an existing album from the data store.
-     *
-     * @param album The Album entity object to be shared.
-     * @param userlogin The user's login you want to share the album to
-     * @throws SharingException Thrown when any error or exception occurs during
-     * sharing.
-     */
-    public void shareAnAlbum(Album album, String userlogin) throws SharingException;
-
-    /**
      * The method finds an album which id is equals the id the User introduce
      * for a new album.
      *
@@ -153,22 +143,12 @@ public interface AlbumManagerLocal {
      *
      * @param userLogin a string with the login from the user who is logged to
      * de app.
-     * @param login A String that contains the words the user introduced.
+     * @@param creatorLogin An String with the login of the creator of the album.
      * @return An ArrayList of Albums that contains the albums that the method
      * found.
      * @throws ReadException Thrown when any error or exception occurs during
      * reading.
      */
-    //public ArrayList<Album> findMySharedAlbumsByCreator(String userLogin, String login) throws ReadException;
-    
-    /**
-     * This method delete an album that someone shared you, it only will be
-     * deleted from your shared table, you can´t delete it literally
-     *
-     * @param userLogin a string with the login from the user who is logged to
-     * de app.
-     * @param album the Entity album that is a shared album you want to delete
-     * @throws exceptions.DeleteException
-     */
-    public void removeFromSharedsAnAlbum(String userLogin, Album album) throws DeleteException;
+
+    public ArrayList<Album> findMySharedAlbumsByCreator(String userLogin, String creatorLogin) throws ReadException;
 }

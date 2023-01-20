@@ -25,6 +25,6 @@ public class SharingException extends Exception {
      * @param msg the detail message.
      */
     public SharingException(String msg) {
-        super("Error while sharing a album, try again later");
+        super("Error while sharing an album, try again later");
     }
 }

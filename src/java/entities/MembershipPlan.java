@@ -11,6 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -20,6 +22,26 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author 2dam
  */
+@NamedQueries({
+    @NamedQuery(
+            name = "findAllPlans", query = "SELECT M FROM MembershipPlan M")
+    ,
+        @NamedQuery(
+            name = "findPlanByPrice", query = "SELECT M FROM MembershipPlan M WHERE M.price<=:planPrice")
+    ,
+        @NamedQuery(
+            name = "findPlanByDuration", query = "SELECT M FROM MembershipPlan M WHERE M.duration<=:planDuration")
+    ,
+        @NamedQuery(
+            name = "findPlanByName", query = "SELECT M FROM MembershipPlan M WHERE M.name=:planName")
+    ,
+        @NamedQuery(
+            name = "findPlanById", query = "SELECT M FROM MembershipPlan M WHERE M.id=:id")
+    ,
+        @NamedQuery(
+            name = "listMembersByPlan", query = "SELECT m FROM Member m inner join m.plan p where p.id=:planId")
+})
+
 @Entity
 @Table(name = "membershipPlan", schema = "bloomingdb")
 @XmlRootElement
@@ -31,7 +53,7 @@ public class MembershipPlan implements Serializable {
     private Integer id;
     private Integer albumLimit;
     private String description;
-    private String duration;
+    private Integer duration;
     /**
      * Relational field containing the members subscribed to the plan
      */
@@ -65,11 +87,11 @@ public class MembershipPlan implements Serializable {
         this.description = description;
     }
 
-    public String getDuration() {
+    public Integer getDuration() {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(Integer duration) {
         this.duration = duration;
     }
 

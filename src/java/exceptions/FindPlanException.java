@@ -7,24 +7,24 @@ package exceptions;
 
 /**
  *
- * @author 2dam
+ * @author minyb
  */
-public class FindUserException extends Exception {
+public class FindPlanException extends Exception {
 
     /**
-     * Creates a new instance of <code>FindUserException</code> without detail
-     * message.
+     * Creates a new instance of <code>FindContentException</code> without
+     * detail message.
      */
-    public FindUserException() {
+    public FindPlanException() {
     }
 
     /**
-     * Constructs an instance of <code>FindUserException</code> with the
+     * Constructs an instance of <code>FindContentException</code> with the
      * specified detail message.
      *
      * @param msg the detail message.
      */
-    public FindUserException(String msg) {
+    public FindPlanException(String msg) {
         super(msg);
     }
 }

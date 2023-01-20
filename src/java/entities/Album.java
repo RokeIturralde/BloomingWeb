@@ -43,7 +43,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     //Query to find all the albums from a creator 
     //and the name contains the words the user introduced.
     @NamedQuery(
-            name = "findMyAlbumsByName", query = "SELECT a FROM Album a WHERE a.creator = :creator AND a.name LIKE '%:name%'"
+            name = "findMyAlbumsByName", query = "SELECT a FROM Album a WHERE a.creator = :creator AND a.name LIKE :name"
     )
     ,
     //Query to find all the albums from a creator 
@@ -57,7 +57,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     )
     ,
     @NamedQuery(
-            name = "findMySharedAlbumsByName", query = "SELECT a FROM Album a INNER JOIN a.users us WHERE a.creator != :user AND us.login = :userLogin AND a.name LIKE '%:name%'"
+            name = "findMySharedAlbumsByName", query = "SELECT a FROM Album a INNER JOIN a.users us WHERE a.creator != :user AND us.login = :userLogin AND a.name LIKE :name"
     )
     ,
     @NamedQuery(
@@ -65,12 +65,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     )
     ,
     @NamedQuery(
-            name = "findMySharedAlbumsByCreator", query = "SELECT a FROM Album a INNER JOIN a.users us INNER JOIN a.creator c WHERE c.login LIKE '%:creatorLogin%' AND us.login = :userLogin"
+            name = "findMySharedAlbumsByCreator", query = "SELECT a FROM Album a INNER JOIN a.users us WHERE a.creator = :creator AND us.login = :userLogin"
     )
-    /*,
-    @NamedQuery(
-            name = "removeFromSharedsAnAlbum", query = "DELETE FROM Album a INNER JOIN a us WHERE a.id = :idAlbum AND us.login = :userLogin"
-    )*/
 })
 
 @Entity
