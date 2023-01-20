@@ -25,11 +25,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     ,
     @NamedQuery(
             name = "getEveryMember", query = "SELECT u FROM User u WHERE u.privilege='MEMBER'"
-    )
-    
-    // query that returns every user as users
-    
+    )    
 })
+
 @Entity
 @Table(name = "member", schema = "bloomingdb")
 @XmlRootElement

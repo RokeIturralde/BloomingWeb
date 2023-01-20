@@ -2,6 +2,8 @@ package service;
 
 import java.util.List;
 
+import javax.ejb.Local;
+
 import entities.Member;
 import exceptions.CreateException;
 import exceptions.DeleteException;
