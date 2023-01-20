@@ -117,15 +117,4 @@ public class EJBMembershipPlanManager implements MembershipPlanInterface {
 
     }
 
-    @Override
-    public List<User> listMembersByPlan(int id) throws FindUserException {
-        List<User> users;
-        try {
-            users = em.createNamedQuery("listMembersByPlan").setParameter("planId", id).getResultList();
-            return users;
-        } catch (Exception e) {
-            throw new FindUserException(e.getMessage());
-        }
-    }
-
 }

@@ -37,9 +37,6 @@ import javax.xml.bind.annotation.XmlTransient;
     ,
         @NamedQuery(
             name = "findPlanById", query = "SELECT M FROM MembershipPlan M WHERE M.id=:id")
-    ,
-        @NamedQuery(
-            name = "listMembersByPlan", query = "SELECT m FROM Member m inner join m.plan p where p.id=:planId")
 })
 
 @Entity

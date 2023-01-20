@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package service;
+package album;
 
-import exceptions.NotTheCreatorException;
 import entities.Album;
 import entities.User;
 import exceptions.*;
@@ -273,15 +272,14 @@ public class EJBAlbumManager implements AlbumManagerLocal {
      *
      * @param userLogin a string with the login from the user who is logged to
      * de app.
-
+     *
      * @param creatorLogin An String with the login of the creator of the album.
-
+     *
      * @return An ArrayList of Albums that contains the albums that the method
      * found.
      * @throws ReadException Thrown when any error or exception occurs during
      * reading.
      */
-
     @Override
     public ArrayList<Album> findMySharedAlbumsByCreator(String userLogin, String creatorLogin) throws ReadException {
         ArrayList<Album> sharedAlbums = null;

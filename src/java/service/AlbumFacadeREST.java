@@ -5,6 +5,7 @@
  */
 package service;
 
+import album.AlbumManagerLocal;
 import entities.Album;
 import exceptions.*;
 import java.text.ParseException;
@@ -107,7 +108,7 @@ public class AlbumFacadeREST {
      * @return An Album that contains the album the method found.
      */
     @GET
-    @Path("/findAlbumByID/{id}")
+    @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 
     public Album findAlbumByID(@PathParam("id") Integer id

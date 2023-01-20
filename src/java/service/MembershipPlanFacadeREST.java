@@ -178,17 +178,4 @@ public class MembershipPlanFacadeREST {
         return plans;
     }
 
-    @GET
-    @Path("findByPlan/{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<User> listMembersByPlan(@PathParam("id") int id) {
-        List<User> users = null;
-        try {
-            users = ejbM.listMembersByPlan(id);
-        } catch (FindUserException ex) {
-            Logger.getLogger(ContentFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return users;
-    }
-
 }
