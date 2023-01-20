@@ -26,7 +26,6 @@ import javax.ejb.Stateless;
 /**
  * @author dani
  */
-@Stateless
 @Path("entities.member")
 public class MemberFacadeREST {
 

@@ -6,14 +6,17 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import entities.Member;
+import entities.MembershipPlan;
 import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.FindMemberException;
 import exceptions.UpdateException;
+import javax.ejb.Stateless;
 
 /**
  * @author dani
  */
+@Stateless
 public class EJBMemberManager implements IMemberManager {
       /**
        * the entity manager is used to manage all the
@@ -52,8 +55,9 @@ public class EJBMemberManager implements IMemberManager {
       }
 
       @Override
-      public List<Member> findMembersByPlan(Integer plan) throws FindMemberException {
+      public List<Member> findMembersByPlan(Integer planID) throws FindMemberException {
             try {
+                MembershipPlan plan = em.find(MembershipPlan.class, planID);
                   return em.createNamedQuery("findMembersByPlan")
                         .setParameter("plan", plan)
                               .getResultList();

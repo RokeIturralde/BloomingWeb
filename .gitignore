@@ -1,3 +1,13 @@
+/build/
+/dist/
+
+.vscode/
+lib/
+nbproject/*
+*.zip
+*xml
+*.properties
+
 # Compiled class file
 *.class
 
@@ -9,7 +19,7 @@
 
 # BlueJ files
 *.ctxt
-# *.xml
+*.xml
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
@@ -33,3 +43,6 @@ nbproject/**
 lib/nblibraries.properties
 /dist/
 /build/
+
+build.xml
+README.md
