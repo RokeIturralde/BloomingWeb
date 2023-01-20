@@ -36,7 +36,6 @@ public class AlbumFacadeREST {
 
     @EJB
     private AlbumManagerLocal ejbA;
-
     /**
      * Logger for this class.
      */
@@ -53,7 +52,9 @@ public class AlbumFacadeREST {
     public void createAlbum(Album album) {
         try {
             LOGGER.log(Level.INFO, "Creating a new Album id= {0}", album.getId());
+
             ejbA.createAlbum(album);
+
         } catch (CreateException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
@@ -87,9 +88,11 @@ public class AlbumFacadeREST {
     public void removeAlbum(@PathParam("id") Integer id) {
         Album album;
         try {
+
             LOGGER.log(Level.INFO, "Deleting the album  id= {0}", id);
             album = ejbA.findAlbumByID(id);
             ejbA.removeAlbum(album);
+
         } catch (ReadException | DeleteException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
@@ -104,14 +107,16 @@ public class AlbumFacadeREST {
      * @return An Album that contains the album the method found.
      */
     @GET
-    @Path("{id}")
+    @Path("/findAlbumByID/{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+
     public Album findAlbumByID(@PathParam("id") Integer id
     ) {
         Album album;
         try {
             LOGGER.log(Level.INFO, "Finding the album id= {0} ", id);
             album = ejbA.findAlbumByID(id);
+
         } catch (ReadException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
@@ -129,6 +134,7 @@ public class AlbumFacadeREST {
     @GET
     @Path("findMyAllAlbums/{userLogin}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+
     public ArrayList<Album> findMyAllAlbums(@PathParam("userLogin") String userLogin
     ) {
         ArrayList<Album> albums;
@@ -151,6 +157,7 @@ public class AlbumFacadeREST {
      * @param name A String that contains the words the user introduced.
      * @return An ArrayList of Albums that contains the albums the method found.
      */
+
     @GET
     @Path("findMyAlbumsByName/{userLogin}/{name}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -174,6 +181,7 @@ public class AlbumFacadeREST {
      *
      * @param userLogin a string with the login from the user who is logged to
      * de app.
+
      * @param stringDate A String that contains the date the User introduce.
      * @return An ArrayList of Albums that contains the albums the method found.
      */
@@ -206,6 +214,7 @@ public class AlbumFacadeREST {
      * de app.
      * @return An ArrayList of Albums that contains the albums the method found.
      */
+
     @GET
     @Path("findMyAllSharedAlbums/{userLogin}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -215,10 +224,12 @@ public class AlbumFacadeREST {
         try {
             LOGGER.log(Level.INFO, "Reading data for all user's shared Albums");
             albums = ejbA.findMyAllSharedAlbums(userLogin);
+
         } catch (ReadException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         }
+
         return albums;
     }
 
@@ -231,6 +242,7 @@ public class AlbumFacadeREST {
      * @param name A String that contains the words the user introduced.
      * @return An ArrayList of Albums that contains the albums the method found.
      */
+
     @GET
     @Path("findMySharedAlbumsByName/{userLogin}/{name}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -241,10 +253,12 @@ public class AlbumFacadeREST {
         try {
             LOGGER.log(Level.INFO, "Reading data for all user's shared Albums by name");
             albums = ejbA.findMySharedAlbumsByName(userLogin, name);
+
         } catch (ReadException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         }
+
         return albums;
     }
 
@@ -254,6 +268,7 @@ public class AlbumFacadeREST {
      *
      * @param userLogin a string with the login from the user who is logged to
      * de app.
+
      * @param stringDate A String that contains the date the User introduce.
      * @return An ArrayList of Albums that contains the albums the method found.
      */
@@ -287,6 +302,7 @@ public class AlbumFacadeREST {
      * @param creatorLogin A String that contains the words the user introduced.
      * @return An ArrayList of Albums that contains the albums the method found.
      */
+
     @GET
     @Path("findMySharedAlbumsByCreator/{userLogin}/{creatorLogin}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -301,6 +317,7 @@ public class AlbumFacadeREST {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         }
+
         return albums;
     }
 }

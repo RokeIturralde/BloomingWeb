@@ -46,6 +46,7 @@ public class EJBAlbumManager implements AlbumManagerLocal {
     @Override
     public void createAlbum(Album album) throws CreateException {
         Album bdAlbum;
+
         try {
             User creator = album.getCreator();
             em.createNamedQuery("findAlbumByName").setParameter("creator", creator).setParameter("name", album.getName()).getSingleResult();
@@ -74,6 +75,7 @@ public class EJBAlbumManager implements AlbumManagerLocal {
             }
             em.flush();
         } catch (Exception e) {
+
             LOGGER.log(Level.SEVERE, "AlbumEJB ->  updateAlbum(Album album) {0}", e.getMessage());
             throw new UpdateException(e.getMessage());
         }
@@ -91,6 +93,7 @@ public class EJBAlbumManager implements AlbumManagerLocal {
         try {
             em.remove(em.merge(album));
         } catch (Exception e) {
+
             LOGGER.log(Level.SEVERE, "AlbumEJB ->  removeAlbum(Album album) {0}", e.getMessage());
             throw new DeleteException(e.getMessage());
 
@@ -232,6 +235,7 @@ public class EJBAlbumManager implements AlbumManagerLocal {
         try {
             user = em.find(User.class, userLogin);
             sharedAlbums = new ArrayList<>(em.createNamedQuery("findMySharedAlbumsByName").setParameter("user", user).setParameter("userLogin", user.getLogin()).setParameter("name", "%" + name + "%").getResultList());
+
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "AlbumEJB ->  findMySharedAlbumsByName(User user, String name) {0}", e.getMessage());
         }
@@ -269,12 +273,15 @@ public class EJBAlbumManager implements AlbumManagerLocal {
      *
      * @param userLogin a string with the login from the user who is logged to
      * de app.
+
      * @param creatorLogin An String with the login of the creator of the album.
+
      * @return An ArrayList of Albums that contains the albums that the method
      * found.
      * @throws ReadException Thrown when any error or exception occurs during
      * reading.
      */
+
     @Override
     public ArrayList<Album> findMySharedAlbumsByCreator(String userLogin, String creatorLogin) throws ReadException {
         ArrayList<Album> sharedAlbums = null;
@@ -282,6 +289,7 @@ public class EJBAlbumManager implements AlbumManagerLocal {
         try {
             user = em.find(User.class, creatorLogin);
             sharedAlbums = new ArrayList<>(em.createNamedQuery("findMySharedAlbumsByCreator").setParameter("creator", user).setParameter("userLogin", userLogin).getResultList());
+
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "AlbumEJB ->  findMySharedAlbumsByCreator(User user, String login) {0}", e.getMessage());
         }

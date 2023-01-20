@@ -149,5 +149,6 @@ public interface AlbumManagerLocal {
      * @throws ReadException Thrown when any error or exception occurs during
      * reading.
      */
+
     public ArrayList<Album> findMySharedAlbumsByCreator(String userLogin, String creatorLogin) throws ReadException;
 }

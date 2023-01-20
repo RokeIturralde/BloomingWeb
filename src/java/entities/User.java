@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entities;
 
 import java.io.Serializable;
@@ -25,10 +20,28 @@ import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+
+
 /**
- *
- * @author 2dam
+ * @author dani
  */
+
+ @NamedQueries({
+    @NamedQuery(
+            name = "findUserByName", query = "SELECT u FROM User u WHERE u.fullName=:userName"
+    )
+    ,
+    @NamedQuery(
+            name = "findUserByEmail", query = "SELECT u FROM User u WHERE u.email=:userEmail"
+    )
+    ,
+    @NamedQuery(
+            name = "findUserByStatus", query = "SELECT u FROM User u WHERE u.status=:userStatus"
+    )
+})
+
 @Entity
 @Table(name = "user", schema = "bloomingdb")
 @Inheritance(strategy = InheritanceType.JOINED)
