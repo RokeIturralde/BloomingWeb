@@ -10,6 +10,7 @@ import exceptions.DeleteException;
 import exceptions.FindMemberException;
 import exceptions.UpdateException;
 
+@Local
 public interface IMemberManager {
     
     public void createMember(Member member) throws CreateException;

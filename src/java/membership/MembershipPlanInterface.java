@@ -35,6 +35,4 @@ public interface MembershipPlanInterface {
     public List<MembershipPlan> findPlanByPrice(float price) throws FindPlanException;
 
     public MembershipPlan findPlanById(int id) throws FindPlanException;
-
-    public List<User> listMembersByPlan(int id) throws FindUserException;
 }
