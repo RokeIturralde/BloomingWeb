@@ -30,41 +30,6 @@ public class EJBContentManager implements ContentInterface {
     private EntityManager em;
 
     /**
-     * Creates a new Content
-     *
-     * @param content
-     * @throws CreateException
-     */
-    @Override
-    public void createContent(Content content) throws CreateException {
-        try {
-            em.persist(content);
-        } catch (Exception e) {
-            throw new CreateException(e.getMessage());
-        }
-
-    }
-
-    /**
-     * Updates a Content
-     *
-     * @param content
-     * @throws UpdateException
-     */
-    @Override
-    public void updateContent(Content content) throws UpdateException {
-        try {
-            if (!em.contains(content)) {
-                em.merge(content);
-            }
-            em.flush();
-        } catch (Exception e) {
-            throw new UpdateException(e.getMessage());
-        }
-
-    }
-
-    /**
      * Delete a Content by their ID
      *
      * @param contentId

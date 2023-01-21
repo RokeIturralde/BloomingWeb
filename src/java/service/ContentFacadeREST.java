@@ -42,27 +42,6 @@ public class ContentFacadeREST {
 
     private Logger LOGGER = Logger.getLogger(ContentFacadeREST.class.getName());
 
-    @POST
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Content entity) {
-        try {
-            ejbC.createContent(entity);
-        } catch (CreateException ex) {
-            LOGGER.severe(ex.getMessage());
-            throw new InternalServerErrorException(ex.getMessage());
-        }
-    }
-
-    @PUT
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(Content entity) {
-        try {
-            ejbC.updateContent(entity);
-        } catch (UpdateException ex) {
-            LOGGER.severe(ex.getMessage());
-            throw new InternalServerErrorException(ex.getMessage());
-        }
-    }
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Integer id) {
@@ -145,7 +124,7 @@ public class ContentFacadeREST {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
-    
+
     @GET
     @Path("/findByLocation/{contentLocation}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})

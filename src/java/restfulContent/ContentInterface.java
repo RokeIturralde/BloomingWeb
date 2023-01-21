@@ -22,10 +22,6 @@ import java.util.List;
  */
 public interface ContentInterface {
 
-    public void createContent(Content content) throws CreateException;
-
-    public void updateContent(Content content) throws UpdateException;
-
     public void removeContent(Integer contentId) throws DeleteException;
 
     public List<Content> findContentByName(String name) throws FindContentException;
@@ -49,6 +45,6 @@ public interface ContentInterface {
     public void createCustomImage(CustomImage content) throws CreateException;
 
     public CustomImage findCustomImageById(Integer contentId) throws FindContentException;
-    
+
     public List<Content> findContentByLocation(String location) throws FindContentException;
 }
