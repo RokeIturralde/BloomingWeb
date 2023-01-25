@@ -67,20 +67,7 @@ public class ContentFacadeREST {
         return content;
     }
 
-    @GET
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Content> findAllContents() {
-        List<Content> contents = null;
-        try {
-            contents = ejbC.findAllContents();
-        } catch (FindAllException ex) {
-            LOGGER.severe(ex.getMessage());
-            throw new InternalServerErrorException(ex.getMessage());
-        }
-        return contents;
-    }
-
-    @GET
+    /*  @GET
     @Path("findByName/{name}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Content> findContentByName(@PathParam("name") String name) {
@@ -135,5 +122,5 @@ public class ContentFacadeREST {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         }
-    }
+    }*/
 }

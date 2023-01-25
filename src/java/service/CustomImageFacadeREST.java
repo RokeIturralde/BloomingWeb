@@ -5,10 +5,12 @@
  */
 package service;
 
+import entities.Content;
 import entities.CustomImage;
 import exceptions.CreateException;
 import exceptions.FindContentException;
 import exceptions.UpdateException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -22,6 +24,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import restfulContent.ContentInterface;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.ws.rs.BadRequestException;
 
 /**
  *
@@ -67,6 +73,64 @@ public class CustomImageFacadeREST {
         try {
             ejbC.createCustomImage(entity);
         } catch (CreateException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+
+    //New methods
+    @GET
+    @Path("findByName/{name}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Content> findCustomImageByName(@PathParam("name") String name) {
+        List<Content> contents = null;
+        try {
+            contents = ejbC.findCustomImageByName(name);
+        } catch (FindContentException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+        return contents;
+    }
+
+    @GET
+    @Path("date/{date}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Content> findCustomImageByDate(@PathParam("date") String stringDate) {
+        List<Content> contents = null;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date date = format.parse(stringDate);
+            contents = ejbC.findCustomImageByDate(date);
+        } catch (FindContentException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        } catch (ParseException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new BadRequestException(ex.getMessage());
+        }
+        return contents;
+    }
+
+    @GET
+    @Path("/findByAlbum/{albumId}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Content> findCustomImageByAlbum(@PathParam("albumId") Integer idAlbum) throws FindContentException {
+        try {
+            return ejbC.findCustomImageByAlbum(idAlbum);
+        } catch (FindContentException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+
+    @GET
+    @Path("/findByLocation/{contentLocation}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Content> findCustomImageByLocation(@PathParam("contentLocation") String contentLocation) throws FindContentException {
+        try {
+            return ejbC.findCustomImageByLocation(contentLocation);
+        } catch (FindContentException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         }

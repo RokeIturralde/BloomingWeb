@@ -5,12 +5,18 @@
  */
 package service;
 
+import entities.Content;
 import entities.CustomText;
 import exceptions.CreateException;
 import exceptions.FindContentException;
 import exceptions.UpdateException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
@@ -65,6 +71,64 @@ public class CustomTextFacadeREST {
         try {
             ejbC.createCustomText(entity);
         } catch (CreateException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+    
+     //New methods
+    @GET
+    @Path("findByName/{name}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Content> findCustomTextByName(@PathParam("name") String name) {
+        List<Content> contents = null;
+        try {
+            contents = ejbC.findCustomTextByName(name);
+        } catch (FindContentException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+        return contents;
+    }
+
+    @GET
+    @Path("date/{date}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Content> findCustomImageByDate(@PathParam("date") String stringDate) {
+        List<Content> contents = null;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date date = format.parse(stringDate);
+            contents = ejbC.findCustomImageByDate(date);
+        } catch (FindContentException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        } catch (ParseException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new BadRequestException(ex.getMessage());
+        }
+        return contents;
+    }
+
+    @GET
+    @Path("/findByAlbum/{albumId}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Content> findCustomTextByAlbum(@PathParam("albumId") Integer idAlbum) throws FindContentException {
+        try {
+            return ejbC.findCustomTextByAlbum(idAlbum);
+        } catch (FindContentException ex) {
+            LOGGER.severe(ex.getMessage());
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+
+    @GET
+    @Path("/findByLocation/{contentLocation}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Content> findCustomTextByLocation(@PathParam("contentLocation") String contentLocation) throws FindContentException {
+        try {
+            return ejbC.findCustomTextByLocation(contentLocation);
+        } catch (FindContentException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
         }

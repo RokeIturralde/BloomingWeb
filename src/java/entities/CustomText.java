@@ -6,13 +6,30 @@
 package entities;
 
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Roke
- */
+ */@NamedQueries({
+    @NamedQuery(
+            name = "findCustomTextByName", query = "SELECT c FROM customText c where c.name=:contentName"
+    )
+    ,
+@NamedQuery(
+            name = "findCustomTextByAlbum", query = "SELECT c FROM customText c inner join c.albums a where a.id=:albumId")
+    ,
+@NamedQuery(
+            name = "findCustomTextByDate", query = "SELECT c FROM customText c where c.uploadDate=:date"
+    )
+    ,
+@NamedQuery(
+            name = "findCustomTextByLocation", query = "SELECT c FROM customText c where c.location=:contentLocation"
+    )
+})
 @Entity
 @Table(name = "customText", schema = "bloomingdb")
 @XmlRootElement

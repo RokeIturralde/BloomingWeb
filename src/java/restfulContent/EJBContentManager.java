@@ -52,7 +52,7 @@ public class EJBContentManager implements ContentInterface {
      * @return a List of Contents that matched
      * @throws FindContentException
      */
-    @Override
+    /*   @Override
     public List<Content> findContentByName(String name) throws FindContentException {
         List<Content> contents;
         try {
@@ -63,15 +63,14 @@ public class EJBContentManager implements ContentInterface {
             throw new FindContentException(e.getMessage());
         }
 
-    }
-
+    }*/
     /**
      * Finds all the Content (Just for testing)
      *
      * @return all the Content
      * @throws FindAllException
      */
-    @Override
+  /*  @Override
     public List<Content> findAllContents() throws FindAllException {
         List<Content> contents;
         try {
@@ -81,7 +80,7 @@ public class EJBContentManager implements ContentInterface {
         }
         contents = em.createNamedQuery("findAllContents").getResultList();
         return contents;
-    }
+    }*/
 
     /**
      * Finds Content by Date
@@ -90,7 +89,7 @@ public class EJBContentManager implements ContentInterface {
      * @return a list of matched Contents
      * @throws FindContentException
      */
-    @Override
+    /*  @Override
     public List<Content> findContentByDate(Date uploadDate) throws FindContentException {
         List<Content> contents;
         try {
@@ -100,8 +99,7 @@ public class EJBContentManager implements ContentInterface {
             throw new FindContentException(e.getMessage());
         }
 
-    }
-
+    }*/
     /**
      * Finds Contents by Album id (Shows all the Contents in that Album)
      *
@@ -109,7 +107,7 @@ public class EJBContentManager implements ContentInterface {
      * @return the Contents of that Album
      * @throws FindContentException
      */
-    @Override
+    /*  @Override
     public List<Content> findContentByAlbum(Integer idAlbum) throws FindContentException {
         List<Content> contents;
         try {
@@ -119,8 +117,7 @@ public class EJBContentManager implements ContentInterface {
             throw new FindContentException(e.getMessage());
         }
 
-    }
-
+    }*/
     /**
      * Finds Content by their Id
      *
@@ -229,11 +226,100 @@ public class EJBContentManager implements ContentInterface {
         return customImage;
     }
 
-    @Override
+    /* @Override
     public List<Content> findContentByLocation(String location) throws FindContentException {
         List<Content> contents;
         try {
             contents = em.createNamedQuery("findContentByLocation").setParameter("contentLocation", location).getResultList();
+            return contents;
+        } catch (Exception e) {
+            throw new FindContentException(e.getMessage());
+        }
+    }*/
+    @Override
+    public List<Content> findCustomImageByName(String name) throws FindContentException {
+        List<Content> contents;
+        try {
+            contents = em.createNamedQuery("findCustomImageByName").setParameter("contentName", name).getResultList();
+
+            return contents;
+        } catch (Exception e) {
+            throw new FindContentException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Content> findCustomTextByName(String name) throws FindContentException {
+        List<Content> contents;
+        try {
+            contents = em.createNamedQuery("findCustomTextByName").setParameter("contentName", name).getResultList();
+
+            return contents;
+        } catch (Exception e) {
+            throw new FindContentException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Content> findCustomImageByDate(Date uploadDate) throws FindContentException {
+        List<Content> contents;
+        try {
+            contents = em.createNamedQuery("findCustomImageByDate").setParameter("date", uploadDate).getResultList();
+            return contents;
+        } catch (Exception e) {
+            throw new FindContentException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Content> findCustomTextByDate(Date uploadDate) throws FindContentException {
+        List<Content> contents;
+        try {
+            contents = em.createNamedQuery("findCustomTextByDate").setParameter("date", uploadDate).getResultList();
+            return contents;
+        } catch (Exception e) {
+            throw new FindContentException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Content> findCustomImageByAlbum(Integer idAlbum) throws FindContentException {
+        List<Content> contents;
+        try {
+            contents = em.createNamedQuery("findCustomImageByAlbum").setParameter("albumId", idAlbum).getResultList();
+            return contents;
+        } catch (Exception e) {
+            throw new FindContentException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Content> findCustomTextByAlbum(Integer idAlbum) throws FindContentException {
+        List<Content> contents;
+        try {
+            contents = em.createNamedQuery("findCustomTextByAlbum").setParameter("albumId", idAlbum).getResultList();
+            return contents;
+        } catch (Exception e) {
+            throw new FindContentException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Content> findCustomTextByLocation(String location) throws FindContentException {
+        List<Content> contents;
+        try {
+            contents = em.createNamedQuery("findCustomTextByLocation").setParameter("contentLocation", location).getResultList();
+            return contents;
+        } catch (Exception e) {
+            throw new FindContentException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Content> findCustomImageByLocation(String location) throws FindContentException {
+        List<Content> contents;
+        try {
+            contents = em.createNamedQuery("findCustomImageByLocation").setParameter("contentLocation", location).getResultList();
             return contents;
         } catch (Exception e) {
             throw new FindContentException(e.getMessage());
