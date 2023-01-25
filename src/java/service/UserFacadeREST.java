@@ -1,5 +1,6 @@
 package service;
 
+import user.IUserManager;
 import entities.Status;
 import entities.User;
 import exceptions.UpdateException;
