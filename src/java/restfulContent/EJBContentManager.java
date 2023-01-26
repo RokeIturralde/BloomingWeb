@@ -8,10 +8,8 @@ package restfulContent;
 import entities.Content;
 import entities.CustomImage;
 import entities.CustomText;
-import entities.User;
 import exceptions.CreateException;
 import exceptions.DeleteException;
-import exceptions.FindAllException;
 import exceptions.FindContentException;
 import exceptions.UpdateException;
 import java.util.Date;
@@ -45,79 +43,6 @@ public class EJBContentManager implements ContentInterface {
         }
     }
 
-    /**
-     * Finds Content by the given name
-     *
-     * @param name the String you want to find
-     * @return a List of Contents that matched
-     * @throws FindContentException
-     */
-    /*   @Override
-    public List<Content> findContentByName(String name) throws FindContentException {
-        List<Content> contents;
-        try {
-            contents = em.createNamedQuery("findContentByName").setParameter("contentName", name).getResultList();
-
-            return contents;
-        } catch (Exception e) {
-            throw new FindContentException(e.getMessage());
-        }
-
-    }*/
-    /**
-     * Finds all the Content (Just for testing)
-     *
-     * @return all the Content
-     * @throws FindAllException
-     */
-  /*  @Override
-    public List<Content> findAllContents() throws FindAllException {
-        List<Content> contents;
-        try {
-
-        } catch (Exception e) {
-            throw new FindAllException(e.getMessage());
-        }
-        contents = em.createNamedQuery("findAllContents").getResultList();
-        return contents;
-    }*/
-
-    /**
-     * Finds Content by Date
-     *
-     * @param uploadDate
-     * @return a list of matched Contents
-     * @throws FindContentException
-     */
-    /*  @Override
-    public List<Content> findContentByDate(Date uploadDate) throws FindContentException {
-        List<Content> contents;
-        try {
-            contents = em.createNamedQuery("findContentByDate").setParameter("date", uploadDate).getResultList();
-            return contents;
-        } catch (Exception e) {
-            throw new FindContentException(e.getMessage());
-        }
-
-    }*/
-    /**
-     * Finds Contents by Album id (Shows all the Contents in that Album)
-     *
-     * @param idAlbum
-     * @return the Contents of that Album
-     * @throws FindContentException
-     */
-    /*  @Override
-    public List<Content> findContentByAlbum(Integer idAlbum) throws FindContentException {
-        List<Content> contents;
-        try {
-            contents = em.createNamedQuery("findContentByAlbum").setParameter("albumId", idAlbum).getResultList();
-            return contents;
-        } catch (Exception e) {
-            throw new FindContentException(e.getMessage());
-        }
-
-    }*/
     /**
      * Finds Content by their Id
      *
@@ -226,21 +151,22 @@ public class EJBContentManager implements ContentInterface {
         return customImage;
     }
 
-    /* @Override
-    public List<Content> findContentByLocation(String location) throws FindContentException {
+    @Override
+    public List<Content> findCustomImageByName(String name, String userLogin) throws FindContentException {
         List<Content> contents;
         try {
-            contents = em.createNamedQuery("findContentByLocation").setParameter("contentLocation", location).getResultList();
+            contents = em.createNamedQuery("findCustomImageByName").setParameter("contentName", name).setParameter("userLogin", userLogin).getResultList();
             return contents;
         } catch (Exception e) {
             throw new FindContentException(e.getMessage());
         }
-    }*/
+    }
+
     @Override
-    public List<Content> findCustomImageByName(String name) throws FindContentException {
+    public List<Content> findCustomTextByName(String name, String userLogin) throws FindContentException {
         List<Content> contents;
         try {
-            contents = em.createNamedQuery("findCustomImageByName").setParameter("contentName", name).getResultList();
+            contents = em.createNamedQuery("findCustomTextByName").setParameter("contentName", name).setParameter("userLogin", userLogin).getResultList();
 
             return contents;
         } catch (Exception e) {
@@ -249,11 +175,10 @@ public class EJBContentManager implements ContentInterface {
     }
 
     @Override
-    public List<Content> findCustomTextByName(String name) throws FindContentException {
+    public List<Content> findCustomImageByDate(Date uploadDate, String userLogin) throws FindContentException {
         List<Content> contents;
         try {
-            contents = em.createNamedQuery("findCustomTextByName").setParameter("contentName", name).getResultList();
-
+            contents = em.createNamedQuery("findCustomTextByDate").setParameter("date", uploadDate).setParameter("userLogin", userLogin).getResultList();
             return contents;
         } catch (Exception e) {
             throw new FindContentException(e.getMessage());
@@ -261,10 +186,10 @@ public class EJBContentManager implements ContentInterface {
     }
 
     @Override
-    public List<Content> findCustomImageByDate(Date uploadDate) throws FindContentException {
+    public List<Content> findCustomTextByDate(Date uploadDate, String userLogin) throws FindContentException {
         List<Content> contents;
         try {
-            contents = em.createNamedQuery("findCustomImageByDate").setParameter("date", uploadDate).getResultList();
+            contents = em.createNamedQuery("findCustomTextByDate").setParameter("date", uploadDate).setParameter("userLogin", userLogin).getResultList();
             return contents;
         } catch (Exception e) {
             throw new FindContentException(e.getMessage());
@@ -272,10 +197,10 @@ public class EJBContentManager implements ContentInterface {
     }
 
     @Override
-    public List<Content> findCustomTextByDate(Date uploadDate) throws FindContentException {
+    public List<Content> findCustomImageByAlbum(Integer idAlbum, String userLogin) throws FindContentException {
         List<Content> contents;
         try {
-            contents = em.createNamedQuery("findCustomTextByDate").setParameter("date", uploadDate).getResultList();
+            contents = em.createNamedQuery("findCustomTextByAlbum").setParameter("albumId", idAlbum).setParameter("userLogin", userLogin).getResultList();
             return contents;
         } catch (Exception e) {
             throw new FindContentException(e.getMessage());
@@ -283,10 +208,10 @@ public class EJBContentManager implements ContentInterface {
     }
 
     @Override
-    public List<Content> findCustomImageByAlbum(Integer idAlbum) throws FindContentException {
+    public List<Content> findCustomTextByAlbum(Integer idAlbum, String userLogin) throws FindContentException {
         List<Content> contents;
         try {
-            contents = em.createNamedQuery("findCustomImageByAlbum").setParameter("albumId", idAlbum).getResultList();
+            contents = em.createNamedQuery("findCustomTextByAlbum").setParameter("albumId", idAlbum).setParameter("userLogin", userLogin).getResultList();
             return contents;
         } catch (Exception e) {
             throw new FindContentException(e.getMessage());
@@ -294,10 +219,10 @@ public class EJBContentManager implements ContentInterface {
     }
 
     @Override
-    public List<Content> findCustomTextByAlbum(Integer idAlbum) throws FindContentException {
+    public List<Content> findCustomTextByLocation(String location, String userLogin) throws FindContentException {
         List<Content> contents;
         try {
-            contents = em.createNamedQuery("findCustomTextByAlbum").setParameter("albumId", idAlbum).getResultList();
+            contents = em.createNamedQuery("findCustomTextByLocation").setParameter("contentLocation", location).setParameter("userLogin", userLogin).getResultList();
             return contents;
         } catch (Exception e) {
             throw new FindContentException(e.getMessage());
@@ -305,21 +230,10 @@ public class EJBContentManager implements ContentInterface {
     }
 
     @Override
-    public List<Content> findCustomTextByLocation(String location) throws FindContentException {
+    public List<Content> findCustomImageByLocation(String location, String userLogin) throws FindContentException {
         List<Content> contents;
         try {
-            contents = em.createNamedQuery("findCustomTextByLocation").setParameter("contentLocation", location).getResultList();
-            return contents;
-        } catch (Exception e) {
-            throw new FindContentException(e.getMessage());
-        }
-    }
-
-    @Override
-    public List<Content> findCustomImageByLocation(String location) throws FindContentException {
-        List<Content> contents;
-        try {
-            contents = em.createNamedQuery("findCustomImageByLocation").setParameter("contentLocation", location).getResultList();
+            contents = em.createNamedQuery("findCustomTextByLocation").setParameter("contentLocation", location).setParameter("userLogin", userLogin).getResultList();
             return contents;
         } catch (Exception e) {
             throw new FindContentException(e.getMessage());

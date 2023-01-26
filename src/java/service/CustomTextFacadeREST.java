@@ -75,15 +75,15 @@ public class CustomTextFacadeREST {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
-    
-     //New methods
+
+    //New methods
     @GET
-    @Path("findByName/{name}")
+    @Path("findByName/{name}/{userLogin}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Content> findCustomTextByName(@PathParam("name") String name) {
+    public List<Content> findCustomTextByName(@PathParam("name") String name, @PathParam("userLogin") String userLogin) {
         List<Content> contents = null;
         try {
-            contents = ejbC.findCustomTextByName(name);
+            contents = ejbC.findCustomTextByName(name, userLogin);
         } catch (FindContentException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
@@ -92,14 +92,14 @@ public class CustomTextFacadeREST {
     }
 
     @GET
-    @Path("date/{date}")
+    @Path("date/{date}/{userLogin}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Content> findCustomImageByDate(@PathParam("date") String stringDate) {
+    public List<Content> findCustomTextByDate(@PathParam("date") String stringDate, @PathParam("userLogin") String userLogin) {
         List<Content> contents = null;
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         try {
             Date date = format.parse(stringDate);
-            contents = ejbC.findCustomImageByDate(date);
+            contents = ejbC.findCustomTextByDate(date, userLogin);
         } catch (FindContentException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
@@ -111,11 +111,11 @@ public class CustomTextFacadeREST {
     }
 
     @GET
-    @Path("/findByAlbum/{albumId}")
+    @Path("/findByAlbum/{albumId}/{userLogin}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Content> findCustomTextByAlbum(@PathParam("albumId") Integer idAlbum) throws FindContentException {
+    public List<Content> findCustomTextByAlbum(@PathParam("albumId") Integer idAlbum, @PathParam("userLogin") String userLogin) throws FindContentException {
         try {
-            return ejbC.findCustomTextByAlbum(idAlbum);
+            return ejbC.findCustomTextByAlbum(idAlbum, userLogin);
         } catch (FindContentException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
@@ -123,11 +123,11 @@ public class CustomTextFacadeREST {
     }
 
     @GET
-    @Path("/findByLocation/{contentLocation}")
+    @Path("/findByLocation/{contentLocation}/{userLogin}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Content> findCustomTextByLocation(@PathParam("contentLocation") String contentLocation) throws FindContentException {
+    public List<Content> findCustomTextByLocation(@PathParam("contentLocation") String contentLocation, @PathParam("userLogin") String userLogin) throws FindContentException {
         try {
-            return ejbC.findCustomTextByLocation(contentLocation);
+            return ejbC.findCustomTextByLocation(contentLocation, userLogin);
         } catch (FindContentException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());

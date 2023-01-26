@@ -17,18 +17,18 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @NamedQueries({
     @NamedQuery(
-            name = "findCustomImageByName", query = "SELECT c FROM customImage c where c.name=:contentName"
+            name = "findCustomImageByName", query = "SELECT c FROM CustomImage c JOIN c.albums a JOIN a.users u WHERE c.name=:name AND u.login=:userLogin"
     )
     ,
 @NamedQuery(
-            name = "findCustomImageByAlbum", query = "SELECT c FROM customImage c inner join c.albums a where a.id=:albumId")
+            name = "findCustomImageByAlbum", query = "SELECT c FROM CustomImage c JOIN c.albums a JOIN a.users u WHERE a.id=:albumId AND u.login=:userLogin")
     ,
 @NamedQuery(
-            name = "findCustomImageByDate", query = "SELECT c FROM customImage c where c.uploadDate=:date"
+            name = "findCustomImageByDate", query = "SELECT c FROM CustomImage c JOIN c.albums a JOIN a.users u WHERE c.uploadDate=:date AND u.login=:userLogin"
     )
     ,
 @NamedQuery(
-            name = "findCustomImageByLocation", query = "SELECT c FROM customImage c where c.location=:contentLocation"
+            name = "findCustomImageByLocation", query = "SELECT c FROM CustomImage c JOIN c.albums a JOIN a.users u WHERE c.location=:contentLocation AND u.login=:userLogin"
     )
 })
 @Entity

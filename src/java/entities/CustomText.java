@@ -14,20 +14,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  *
  * @author Roke
- */@NamedQueries({
+ */
+@NamedQueries({
     @NamedQuery(
-            name = "findCustomTextByName", query = "SELECT c FROM customText c where c.name=:contentName"
+            name = "findCustomTextByName", query = "SELECT c FROM CustomText c JOIN c.albums a JOIN a.users u WHERE c.name=:name AND u.login=:userLogin"
     )
     ,
 @NamedQuery(
-            name = "findCustomTextByAlbum", query = "SELECT c FROM customText c inner join c.albums a where a.id=:albumId")
+            name = "findCustomTextByAlbum", query = "SELECT c FROM CustomText c JOIN c.albums a JOIN a.users u WHERE a.id=:albumId AND u.login=:userLogin")
     ,
 @NamedQuery(
-            name = "findCustomTextByDate", query = "SELECT c FROM customText c where c.uploadDate=:date"
+            name = "findCustomTextByDate", query = "SELECT c FROM CustomText c JOIN c.albums a JOIN a.users u WHERE c.uploadDate=:date AND u.login=:userLogin"
     )
     ,
 @NamedQuery(
-            name = "findCustomTextByLocation", query = "SELECT c FROM customText c where c.location=:contentLocation"
+            name = "findCustomTextByLocation", query = "SELECT c FROM CustomText c JOIN c.albums a JOIN a.users u WHERE c.location=:contentLocation AND u.login=:userLogin"
     )
 })
 @Entity

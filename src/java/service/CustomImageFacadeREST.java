@@ -11,7 +11,6 @@ import exceptions.CreateException;
 import exceptions.FindContentException;
 import exceptions.UpdateException;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
@@ -80,12 +79,12 @@ public class CustomImageFacadeREST {
 
     //New methods
     @GET
-    @Path("findByName/{name}")
+    @Path("findByName/{name}/{userLogin}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Content> findCustomImageByName(@PathParam("name") String name) {
+    public List<Content> findCustomImageByName(@PathParam("name") String name, @PathParam("userLogin") String userLogin) {
         List<Content> contents = null;
         try {
-            contents = ejbC.findCustomImageByName(name);
+            contents = ejbC.findCustomImageByName(name, userLogin);
         } catch (FindContentException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
@@ -94,14 +93,14 @@ public class CustomImageFacadeREST {
     }
 
     @GET
-    @Path("date/{date}")
+    @Path("date/{date}/{userLogin}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Content> findCustomImageByDate(@PathParam("date") String stringDate) {
+    public List<Content> findCustomImageByDate(@PathParam("date") String stringDate, @PathParam("userLogin") String userLogin) {
         List<Content> contents = null;
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         try {
             Date date = format.parse(stringDate);
-            contents = ejbC.findCustomImageByDate(date);
+            contents = ejbC.findCustomImageByDate(date, userLogin);
         } catch (FindContentException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
@@ -113,11 +112,11 @@ public class CustomImageFacadeREST {
     }
 
     @GET
-    @Path("/findByAlbum/{albumId}")
+    @Path("/findByAlbum/{albumId}/{userLogin}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Content> findCustomImageByAlbum(@PathParam("albumId") Integer idAlbum) throws FindContentException {
+    public List<Content> findCustomImageByAlbum(@PathParam("albumId") Integer idAlbum, @PathParam("userLogin") String userLogin) throws FindContentException {
         try {
-            return ejbC.findCustomImageByAlbum(idAlbum);
+            return ejbC.findCustomImageByAlbum(idAlbum, userLogin);
         } catch (FindContentException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
@@ -125,11 +124,11 @@ public class CustomImageFacadeREST {
     }
 
     @GET
-    @Path("/findByLocation/{contentLocation}")
+    @Path("/findByLocation/{contentLocation}/{userLogin}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Content> findCustomImageByLocation(@PathParam("contentLocation") String contentLocation) throws FindContentException {
+    public List<Content> findCustomImageByLocation(@PathParam("contentLocation") String contentLocation, @PathParam("userLogin") String userLogin) throws FindContentException {
         try {
-            return ejbC.findCustomImageByLocation(contentLocation);
+            return ejbC.findCustomImageByLocation(contentLocation, userLogin);
         } catch (FindContentException ex) {
             LOGGER.severe(ex.getMessage());
             throw new InternalServerErrorException(ex.getMessage());
