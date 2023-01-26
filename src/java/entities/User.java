@@ -30,7 +30,7 @@ import javax.persistence.NamedQuery;
 
  @NamedQueries({
     @NamedQuery(
-            name = "findUserByName", query = "SELECT u FROM User u WHERE u.fullName=:userName"
+            name = "findUserByName", query = "SELECT u FROM User u WHERE u.fullName LIKE :userName"
     )
     ,
     @NamedQuery(
