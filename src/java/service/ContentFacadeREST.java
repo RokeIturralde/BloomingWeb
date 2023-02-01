@@ -18,12 +18,9 @@ import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.BadRequestException;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -116,7 +113,7 @@ public class ContentFacadeREST {
     @GET
     @Path("/findByAlbum/{albumId}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Content> findContentByAlbum(@PathParam("albumId") Integer idAlbum) throws FindContentException {
+    public List<Content> findContentByAlbum(@PathParam("albumId") Integer idAlbum) throws InternalServerErrorException {
         try {
             return ejbC.findContentByAlbum(idAlbum);
         } catch (FindContentException ex) {
@@ -128,7 +125,7 @@ public class ContentFacadeREST {
     @GET
     @Path("/findByLocation/{contentLocation}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Content> findContentByLocation(@PathParam("contentLocation") String contentLocation) throws FindContentException {
+    public List<Content> findContentByLocation(@PathParam("contentLocation") String contentLocation) throws InternalServerErrorException {
         try {
             return ejbC.findContentByLocation(contentLocation);
         } catch (FindContentException ex) {
