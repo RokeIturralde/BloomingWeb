@@ -31,10 +31,8 @@ public interface IUserManager {
 
     public List<User> findUsersByPrivilege(Privilege privilege) throws FindUserException;
 
-    public List <User> findUsersByPrivilege(Privilege privilege) throws FindUserException;
-    
     public User signIn(String loginUser, String password) throws LoginDoesNotExistException, NotThePasswordException;
- 
+
     public void passwordRecovery(String userLogin) throws PasswordRecoveryException, UpdateException, FindUserException;
 
 }

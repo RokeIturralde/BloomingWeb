@@ -181,6 +181,7 @@ public class EJBUserManager implements IUserManager {
         }
 
         return user;
+    }
 
     public void passwordRecovery(String userLogin) throws PasswordRecoveryException, UpdateException, FindUserException {
         User user = findUserByLogin(userLogin);
