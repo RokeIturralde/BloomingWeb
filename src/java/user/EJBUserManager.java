@@ -12,7 +12,11 @@ import entities.User;
 import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.FindUserException;
+import exceptions.LoginDoesNotExistException;
+import exceptions.NotThePasswordException;
 import exceptions.UpdateException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.xml.bind.DatatypeConverter;
@@ -27,7 +31,6 @@ public class EJBUserManager implements IUserManager {
     /**
      * the entity manager is used to manage all the
      */
-
     @PersistenceContext(unitName = "BloomingWebPU")
     private EntityManager em;
 
@@ -63,7 +66,6 @@ public class EJBUserManager implements IUserManager {
                 String hasheada = Cryptology.hashPassword(desencriptada);
                 user.setPassword(hasheada);
                 EmailPasswordChange email = new EmailPasswordChange(user.getEmail());
-
                 em.merge(user);
             }
             em.flush();
@@ -142,6 +144,38 @@ public class EJBUserManager implements IUserManager {
         } catch (Exception e) {
             throw new FindUserException(e.getMessage());
         }
+    }
+
+    @Override
+    public User signIn(String loginUser, String password) throws LoginDoesNotExistException, NotThePasswordException {
+        User user = new User();
+
+        try {
+            user = findUserByLogin(loginUser);
+            if (user == null) {
+                throw new LoginDoesNotExistException();
+            } else {
+                String passBD = user.getPassword();
+                //Quitarle el hexadecimal a la contraseña y desencriptar contraseña (clave privada server)
+                byte[] passwd = Cryptology.decrypt(DatatypeConverter.parseHexBinary(password));
+
+                //Hasear contraseña para comparar ambas
+                password = new String(passwd);
+                String resumen = Cryptology.hashPassword(password);
+                //Si no coinciden asignarle a la contraseña del user "notFound"
+                if (password.hashCode() != passBD.hashCode()) {
+                    user.setPassword("notFound");
+                    throw new NotThePasswordException();
+                }
+
+            }
+
+        } catch (LoginDoesNotExistException | FindUserException ex) {
+            Logger.getLogger(EJBUserManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return user;
+
     }
 
 }

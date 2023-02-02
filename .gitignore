@@ -44,5 +44,7 @@ lib/nblibraries.properties
 /dist/
 /build/
 
+web/**
 build.xml
 README.md
+/BloomingWeb/nbproject/private/

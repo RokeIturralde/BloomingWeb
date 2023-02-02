@@ -27,8 +27,6 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-
-
 /**
  *
  * @author minyb
@@ -90,7 +88,6 @@ public class Cryptology {
         }
         return contrasenaCifrada;
     }
-    
     public static String hashPassword(String texto) {
         MessageDigest messageDigest;
         String passwordHashed = "";
@@ -136,7 +133,6 @@ public class Cryptology {
         }
         return bs;
     }
-    
     public static PublicKey readPublicKey(String filename) {
         X509EncodedKeySpec publicSpec;
         KeyFactory keyFactory;
@@ -150,7 +146,7 @@ public class Cryptology {
         }
         return publicKey;
     }
-    
+
     private static byte[] fileReader(String path) {
         byte ret[] = null;
         File file = new File(path);
@@ -175,5 +171,4 @@ public class Cryptology {
         }
         return privateKey;
     }
-    
 }
