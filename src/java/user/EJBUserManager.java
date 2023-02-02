@@ -12,31 +12,36 @@ import entities.User;
 import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.FindUserException;
+import exceptions.PasswordRecoveryException;
 import exceptions.UpdateException;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
+import recovery.MailService;
 import javax.xml.bind.DatatypeConverter;
 import passwordChange.EmailPasswordChange;
 
 /**
  * @author dani
  */
-
 @Stateless
 public class EJBUserManager implements IUserManager {
-    /**
-     * the entity manager is used to manage all the 
-     */
 
+    /**
+     * the entity manager is used to manage all the
+     */
     @PersistenceContext(unitName = "BloomingWebPU")
     private EntityManager em;
 
     /**
      * writes a new user to the database
+     *
      * @param user
      * @throws CreateException
      */
-
     @Override
     public void createUser(User user) throws CreateException {
         try {
@@ -48,10 +53,10 @@ public class EJBUserManager implements IUserManager {
 
     /**
      * updates a user
+     *
      * @param user
      * @throws UpdateException
      */
-
     @Override
     public void updateUser(User user) throws UpdateException {
         try {
@@ -62,7 +67,6 @@ public class EJBUserManager implements IUserManager {
                 String hasheada = Cryptology.hashPassword(desencriptada);
                 user.setPassword(hasheada);
                 EmailPasswordChange email = new EmailPasswordChange(user.getEmail());
-                
                 em.merge(user);
             }
             em.flush();
@@ -73,18 +77,19 @@ public class EJBUserManager implements IUserManager {
 
     /**
      * deletes a user by their login (ID)
+     *
      * @param userId
      */
     @Override
     public void removeUser(String login) throws DeleteException {
         try {
-            if (em.contains(findUserByLogin(login)))
+            if (em.contains(findUserByLogin(login))) {
                 em.remove(em.find(User.class, login));
+            }
         } catch (Exception e) {
             throw new DeleteException(e.getMessage());
         }
     }
-
 
     @Override
     public User findUserByLogin(String login) throws FindUserException {
@@ -95,52 +100,61 @@ public class EJBUserManager implements IUserManager {
         }
     }
 
-
     @Override
     public User findUserByEmail(String email) throws FindUserException {
         try {
             return User.class.cast(
-                em.createNamedQuery("findUserByEmail")
-                    .setParameter("userEmail", email)
-                        .getSingleResult());
+                    em.createNamedQuery("findUserByEmail")
+                            .setParameter("userEmail", email)
+                            .getSingleResult());
         } catch (Exception e) {
             throw new FindUserException(e.getMessage());
         }
     }
-
 
     @Override
     public List<User> findUsersByName(String name) throws FindUserException {
         try {
             return em.createNamedQuery("findUserByName")
                     .setParameter("userName", "%" + name + "%")
-                        .getResultList();
+                    .getResultList();
         } catch (Exception e) {
             throw new FindUserException(e.getMessage());
         }
     }
-
 
     @Override
     public List<User> findUsersByStatus(Status status) throws FindUserException {
         try {
             return em.createNamedQuery("findUserByStatus")
                     .setParameter("userStatus", status)
-                        .getResultList();
+                    .getResultList();
         } catch (Exception e) {
             throw new FindUserException(e.getMessage());
         }
     }
-
 
     @Override
     public List<User> findUsersByPrivilege(Privilege privilege) throws FindUserException {
         try {
             return em.createNamedQuery("findUserByPrivilege")
                     .setParameter("userPrivilege", privilege)
-                        .getResultList();
+                    .getResultList();
         } catch (Exception e) {
             throw new FindUserException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void passwordRecovery(String userLogin) throws PasswordRecoveryException, UpdateException, FindUserException {
+        User user = findUserByLogin(userLogin);
+        if (user != null) {
+            MailService mailService = new MailService(user.getEmail());
+            String newPassword = mailService.getRecuperacion();
+            String hashedPass = mailService.hashPassword(newPassword);
+            user.setPassword(hashedPass);
+            user.setLastPasswordChange(Date.valueOf(LocalDate.now()));
+            updateUser(user);
         }
     }
 

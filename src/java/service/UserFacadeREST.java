@@ -11,6 +11,8 @@ import java.util.logging.Logger;
 import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.FindUserException;
+import exceptions.PasswordRecoveryException;
+import java.util.logging.Level;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -25,7 +27,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-
 /**
  * @author dani
  */
@@ -37,7 +38,6 @@ public class UserFacadeREST {
     private IUserManager ejb;
 
     private Logger LOGGER = Logger.getLogger(UserFacadeREST.class.getName());
-
 
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -75,7 +75,7 @@ public class UserFacadeREST {
     @GET
     @Path("findByName/{name}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List <User> findUserByName(@PathParam("name") String name) {
+    public List<User> findUserByName(@PathParam("name") String name) {
         try {
             return ejb.findUsersByName(name);
         } catch (FindUserException fue) {
@@ -99,7 +99,7 @@ public class UserFacadeREST {
     @GET
     @Path("findByStatus/{status}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List <User> findUserByStatus(@PathParam("status") Status status) {
+    public List<User> findUserByStatus(@PathParam("status") Status status) {
         try {
             return ejb.findUsersByStatus(status);
         } catch (FindUserException fue) {
@@ -118,5 +118,17 @@ public class UserFacadeREST {
             LOGGER.severe(fue.getMessage());
             throw new InternalServerErrorException(fue.getMessage());
         }
-    }    
+    }
+
+    @GET
+    @Path("recoverPassword/{login}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void recoverPassword(@PathParam("login") String login) {
+        try {
+            ejb.passwordRecovery(login);
+        } catch (UpdateException | PasswordRecoveryException | FindUserException ue) {
+            LOGGER.severe(ue.getMessage());
+            throw new InternalServerErrorException(ue.getMessage());
+        }
+    }
 }
