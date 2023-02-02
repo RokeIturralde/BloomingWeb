@@ -163,13 +163,14 @@ public class EJBUserManager implements IUserManager {
                 String passBD = user.getPassword();
                 Cryptology crypto = new Cryptology();
                 //Quitarle el hexadecimal a la contraseña y desencriptar contraseña (clave privada server)
-                byte[] passwd = crypto.decrypt(DatatypeConverter.parseHexBinary(password));
+                byte[] passNoHex = DatatypeConverter.parseHexBinary(password);
+                byte[] passwrd = crypto.decrypt(passNoHex);
 
                 //Hasear contraseña para comparar ambas
-                password = new String(passwd);
+                password = new String(passwrd);
                 String resumen = Cryptology.hashPassword(password);
                 //Si no coinciden asignarle a la contraseña del user "notFound"
-                if (password.hashCode() != passBD.hashCode()) {
+                if (resumen.hashCode() != passBD.hashCode()) {
                     user.setPassword("notFound");
                     throw new NotThePasswordException();
                 }

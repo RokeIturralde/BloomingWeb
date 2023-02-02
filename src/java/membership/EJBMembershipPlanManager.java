@@ -5,6 +5,7 @@
  */
 package membership;
 
+import encrypt.Cryptology;
 import entities.MembershipPlan;
 import entities.User;
 import exceptions.CreateException;
@@ -63,6 +64,8 @@ public class EJBMembershipPlanManager implements MembershipPlanInterface {
     public List<MembershipPlan> findPlanByName(String name) throws FindPlanException {
         List<MembershipPlan> plans;
         try {
+            Cryptology crypto = new Cryptology();
+            crypto.generate();
             plans = em.createNamedQuery("findPlanByName").setParameter("planName", name).getResultList();
             return plans;
         } catch (Exception e) {
