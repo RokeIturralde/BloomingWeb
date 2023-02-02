@@ -21,11 +21,11 @@ import passwordChange.EmailPasswordChange;
 /**
  * @author dani
  */
-
 @Stateless
 public class EJBUserManager implements IUserManager {
+
     /**
-     * the entity manager is used to manage all the 
+     * the entity manager is used to manage all the
      */
 
     @PersistenceContext(unitName = "BloomingWebPU")
@@ -33,10 +33,10 @@ public class EJBUserManager implements IUserManager {
 
     /**
      * writes a new user to the database
+     *
      * @param user
      * @throws CreateException
      */
-
     @Override
     public void createUser(User user) throws CreateException {
         try {
@@ -48,21 +48,22 @@ public class EJBUserManager implements IUserManager {
 
     /**
      * updates a user
+     *
      * @param user
      * @throws UpdateException
      */
-
     @Override
     public void updateUser(User user) throws UpdateException {
         try {
             if (!em.contains(user)) {
+                Cryptology crypto = new Cryptology();
                 //Desencriptar y hashear
-                byte[] passDesencriptada = Cryptology.decrypt(DatatypeConverter.parseHexBinary(user.getPassword()));
+                byte[] passDesencriptada = crypto.decrypt(DatatypeConverter.parseHexBinary(user.getPassword()));
                 String desencriptada = new String(passDesencriptada);
                 String hasheada = Cryptology.hashPassword(desencriptada);
                 user.setPassword(hasheada);
                 EmailPasswordChange email = new EmailPasswordChange(user.getEmail());
-                
+
                 em.merge(user);
             }
             em.flush();
@@ -73,72 +74,71 @@ public class EJBUserManager implements IUserManager {
 
     /**
      * deletes a user by their login (ID)
+     *
      * @param userId
      */
     @Override
     public void removeUser(String login) throws DeleteException {
         try {
-            if (em.contains(findUserByLogin(login)))
+            if (em.contains(findUserByLogin(login))) {
                 em.remove(em.find(User.class, login));
+            }
         } catch (Exception e) {
             throw new DeleteException(e.getMessage());
         }
     }
 
-
     @Override
     public User findUserByLogin(String login) throws FindUserException {
         try {
-            return em.find(User.class, login);
+            User user;
+            user = em.find(User.class, login);
+            return user;
         } catch (Exception e) {
             throw new FindUserException(e.getMessage());
         }
     }
-
 
     @Override
     public User findUserByEmail(String email) throws FindUserException {
         try {
             return User.class.cast(
-                em.createNamedQuery("findUserByEmail")
-                    .setParameter("userEmail", email)
-                        .getSingleResult());
+                    em.createNamedQuery("findUserByEmail")
+                            .setParameter("userEmail", email)
+                            .getSingleResult());
         } catch (Exception e) {
             throw new FindUserException(e.getMessage());
         }
     }
-
 
     @Override
     public List<User> findUsersByName(String name) throws FindUserException {
         try {
             return em.createNamedQuery("findUserByName")
                     .setParameter("userName", "%" + name + "%")
-                        .getResultList();
+                    .getResultList();
         } catch (Exception e) {
             throw new FindUserException(e.getMessage());
         }
     }
-
 
     @Override
     public List<User> findUsersByStatus(Status status) throws FindUserException {
         try {
             return em.createNamedQuery("findUserByStatus")
                     .setParameter("userStatus", status)
-                        .getResultList();
+                    .getResultList();
         } catch (Exception e) {
             throw new FindUserException(e.getMessage());
         }
     }
-
 
     @Override
     public List<User> findUsersByPrivilege(Privilege privilege) throws FindUserException {
         try {
             return em.createNamedQuery("findUserByPrivilege")
                     .setParameter("userPrivilege", privilege)
-                        .getResultList();
+                    .getResultList();
         } catch (Exception e) {
             throw new FindUserException(e.getMessage());
         }
