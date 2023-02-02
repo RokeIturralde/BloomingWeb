@@ -8,6 +8,7 @@ package restfulContent;
 import entities.Content;
 import entities.CustomImage;
 import entities.CustomText;
+import entities.User;
 import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.FindAllException;

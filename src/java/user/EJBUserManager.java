@@ -1,4 +1,4 @@
-package service;
+package user;
 
 import encrypt.Cryptology;
 import java.util.List;

@@ -1,5 +1,6 @@
 package service;
 
+import user.IMemberManager;
 import entities.Member;
 import exceptions.CreateException;
 import exceptions.DeleteException;

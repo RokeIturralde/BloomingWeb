@@ -26,7 +26,7 @@ import javax.persistence.PersistenceContext;
 @Stateless
 public class EJBAlbumManager implements AlbumManagerLocal {
 
-    private static final Logger LOGGER = Logger.getLogger("package service");
+    private static final Logger LOGGER = Logger.getLogger("package album");
     /**
      * EntityManager for DataModelExamplePU persistence unit.
      */

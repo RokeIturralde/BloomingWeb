@@ -41,8 +41,7 @@ import javax.xml.bind.annotation.XmlTransient;
     )
     ,
 @NamedQuery(
-            name = "findContentByAlbum", query = "SELECT c FROM Content c inner join c.albums a where a.id=:albumId"
-    )
+            name = "findContentByAlbum", query = "SELECT c FROM Content c inner join c.albums a where a.id=:albumId")
     ,
 @NamedQuery(
             name = "findContentByDate", query = "SELECT c FROM Content c where c.uploadDate=:date"
@@ -68,9 +67,12 @@ public class Content implements Serializable {
     @ManyToMany(mappedBy = "contents", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Album> albums;
     private String name;
-    @Temporal(TemporalType.TIMESTAMP)
+    /* @Temporal(TemporalType.TIMESTAMP)
     @JsonSerialize(as = Date.class)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")*/
+    @Temporal(TemporalType.DATE)
+    @JsonSerialize(as = Date.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date uploadDate;
     private String location;
 
