@@ -11,6 +11,8 @@ import java.util.logging.Logger;
 import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.FindUserException;
+import exceptions.LoginDoesNotExistException;
+import exceptions.NotThePasswordException;
 import exceptions.PasswordRecoveryException;
 import java.util.logging.Level;
 
@@ -120,6 +122,29 @@ public class UserFacadeREST {
         }
     }
 
+    /**
+     * GET method to can enter to the application: it uses business method
+     * signIn.
+     *
+     *
+     * @param loginUser An String with the login of the user who wants to enter
+     * @param password Sn String with the password of the user who wants to
+     * enter
+     * @return
+     */
+    @GET
+    @Path("signIn/{login}/{password}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public User signIn(@PathParam("login") String loginUser, @PathParam("password") String password) {
+        User user = new User();
+        try {
+            user = ejb.signIn(loginUser, password);
+        } catch (LoginDoesNotExistException | NotThePasswordException e) {
+            LOGGER.severe(e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
+        return user;
+        }
     @GET
     @Path("recoverPassword/{login}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})

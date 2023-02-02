@@ -8,6 +8,8 @@ import entities.User;
 import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.FindUserException;
+import exceptions.LoginDoesNotExistException;
+import exceptions.NotThePasswordException;
 import exceptions.PasswordRecoveryException;
 import exceptions.UpdateException;
 
@@ -29,6 +31,10 @@ public interface IUserManager {
 
     public List<User> findUsersByPrivilege(Privilege privilege) throws FindUserException;
 
+    public List <User> findUsersByPrivilege(Privilege privilege) throws FindUserException;
+    
+    public User signIn(String loginUser, String password) throws LoginDoesNotExistException, NotThePasswordException;
+ 
     public void passwordRecovery(String userLogin) throws PasswordRecoveryException, UpdateException, FindUserException;
 
 }

@@ -27,8 +27,6 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-
-
 /**
  *
  * @author minyb
@@ -72,13 +70,13 @@ public class Cryptology {
         }
     }
     
-    public static byte[] encrypt(byte[] mensaje) {
+    public byte[] encrypt(byte[] mensaje) {
         Cipher cipher;
         byte[] contrasenaCifrada = null;
         PublicKey key;
         try {
             // Leemos la clave publica del archivo en el cual lo hemos escrito
-            key = readPublicKey("./src/files/public.key");
+            key = readPublicKey(getClass().getResource("Public.key").getPath());
             // Obtenemos una instancide de Cipher con el algoritmos que vamos a usar "RSA/ECB/OAEPWithSHA1AndMGF1Padding"
             cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA1AndMGF1Padding");
             // Iniciamos el Cipher en ENCRYPT_MODE y le pasamos la clave publica
@@ -90,7 +88,6 @@ public class Cryptology {
         }
         return contrasenaCifrada;
     }
-    
     public static String hashPassword(String texto) {
         MessageDigest messageDigest;
         String passwordHashed = "";
@@ -118,13 +115,13 @@ public class Cryptology {
         return buf.toString();
     }
     
-    public static byte[] decrypt(byte[] ciphertext) {
+    public byte[] decrypt(byte[] ciphertext) {
         Cipher cipher;
         byte[] bs = null;
         PrivateKey key;
         try {
             // Leemos la clave privada del archivo en el cual lo hemos escrito
-            key = readPrivateKey("C:\\Users\\minyb\\OneDrive\\Documentos\\Reto2\\BloomingWeb\\src\\files\\private.key");
+            key = readPrivateKey(getClass().getResource("Private.key").getPath());
             // Obtenemos una instancide de Cipher con el algoritmos que vamos a usar "RSA/ECB/OAEPWithSHA1AndMGF1Padding"
             cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             // Iniciamos el Cipher en DECRYPT_MODE y le pasamos la clave privada
@@ -136,7 +133,6 @@ public class Cryptology {
         }
         return bs;
     }
-    
     public static PublicKey readPublicKey(String filename) {
         X509EncodedKeySpec publicSpec;
         KeyFactory keyFactory;
@@ -150,7 +146,7 @@ public class Cryptology {
         }
         return publicKey;
     }
-    
+
     private static byte[] fileReader(String path) {
         byte ret[] = null;
         File file = new File(path);
@@ -162,7 +158,7 @@ public class Cryptology {
         return ret;
     }
     
-    public static PrivateKey readPrivateKey(String filename) {
+    public PrivateKey readPrivateKey(String filename) {
         PKCS8EncodedKeySpec keySpec;
         KeyFactory keyFactory;
         PrivateKey privateKey = null;
@@ -175,5 +171,4 @@ public class Cryptology {
         }
         return privateKey;
     }
-    
 }

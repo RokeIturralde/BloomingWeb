@@ -12,6 +12,9 @@ import entities.User;
 import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.FindUserException;
+import exceptions.LoginDoesNotExistException;
+import exceptions.NotThePasswordException;
+import exceptions.UpdateException;
 import exceptions.PasswordRecoveryException;
 import exceptions.UpdateException;
 import java.sql.Date;
@@ -61,8 +64,9 @@ public class EJBUserManager implements IUserManager {
     public void updateUser(User user) throws UpdateException {
         try {
             if (!em.contains(user)) {
+                Cryptology crypto = new Cryptology();
                 //Desencriptar y hashear
-                byte[] passDesencriptada = Cryptology.decrypt(DatatypeConverter.parseHexBinary(user.getPassword()));
+                byte[] passDesencriptada = crypto.decrypt(DatatypeConverter.parseHexBinary(user.getPassword()));
                 String desencriptada = new String(passDesencriptada);
                 String hasheada = Cryptology.hashPassword(desencriptada);
                 user.setPassword(hasheada);
@@ -94,7 +98,9 @@ public class EJBUserManager implements IUserManager {
     @Override
     public User findUserByLogin(String login) throws FindUserException {
         try {
-            return em.find(User.class, login);
+            User user;
+            user = em.find(User.class, login);
+            return user;
         } catch (Exception e) {
             throw new FindUserException(e.getMessage());
         }
@@ -146,6 +152,36 @@ public class EJBUserManager implements IUserManager {
     }
 
     @Override
+    public User signIn(String loginUser, String password) throws LoginDoesNotExistException, NotThePasswordException {
+        User user = new User();
+
+        try {
+            user = findUserByLogin(loginUser);
+            if (user == null) {
+                throw new LoginDoesNotExistException();
+            } else {
+                String passBD = user.getPassword();
+                Cryptology crypto = new Cryptology();
+                //Quitarle el hexadecimal a la contraseña y desencriptar contraseña (clave privada server)
+                byte[] passwd = crypto.decrypt(DatatypeConverter.parseHexBinary(password));
+
+                //Hasear contraseña para comparar ambas
+                password = new String(passwd);
+                String resumen = Cryptology.hashPassword(password);
+                //Si no coinciden asignarle a la contraseña del user "notFound"
+                if (password.hashCode() != passBD.hashCode()) {
+                    user.setPassword("notFound");
+                    throw new NotThePasswordException();
+                }
+
+            }
+
+        } catch (LoginDoesNotExistException | FindUserException ex) {
+            Logger.getLogger(EJBUserManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return user;
+
     public void passwordRecovery(String userLogin) throws PasswordRecoveryException, UpdateException, FindUserException {
         User user = findUserByLogin(userLogin);
         if (user != null) {
