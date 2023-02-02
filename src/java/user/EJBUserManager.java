@@ -15,10 +15,15 @@ import exceptions.FindUserException;
 import exceptions.LoginDoesNotExistException;
 import exceptions.NotThePasswordException;
 import exceptions.UpdateException;
+import exceptions.PasswordRecoveryException;
+import exceptions.UpdateException;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
+import recovery.MailService;
 import javax.xml.bind.DatatypeConverter;
 import passwordChange.EmailPasswordChange;
 
@@ -177,6 +182,16 @@ public class EJBUserManager implements IUserManager {
 
         return user;
 
+    public void passwordRecovery(String userLogin) throws PasswordRecoveryException, UpdateException, FindUserException {
+        User user = findUserByLogin(userLogin);
+        if (user != null) {
+            MailService mailService = new MailService(user.getEmail());
+            String newPassword = mailService.getRecuperacion();
+            String hashedPass = mailService.hashPassword(newPassword);
+            user.setPassword(hashedPass);
+            user.setLastPasswordChange(Date.valueOf(LocalDate.now()));
+            updateUser(user);
+        }
     }
 
 }

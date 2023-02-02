@@ -13,6 +13,8 @@ import exceptions.DeleteException;
 import exceptions.FindUserException;
 import exceptions.LoginDoesNotExistException;
 import exceptions.NotThePasswordException;
+import exceptions.PasswordRecoveryException;
+import java.util.logging.Level;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -142,5 +144,16 @@ public class UserFacadeREST {
             throw new InternalServerErrorException(e.getMessage());
         }
         return user;
+        }
+    @GET
+    @Path("recoverPassword/{login}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void recoverPassword(@PathParam("login") String login) {
+        try {
+            ejb.passwordRecovery(login);
+        } catch (UpdateException | PasswordRecoveryException | FindUserException ue) {
+            LOGGER.severe(ue.getMessage());
+            throw new InternalServerErrorException(ue.getMessage());
+        }
     }
 }
