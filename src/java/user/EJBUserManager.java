@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.xml.bind.DatatypeConverter;
+import passwordChange.EmailPasswordChange;
 
 /**
  * @author dani
@@ -58,6 +59,13 @@ public class EJBUserManager implements IUserManager {
     public void updateUser(User user) throws UpdateException {
         try {
             if (!em.contains(user)) {
+                Cryptology crypto = new Cryptology();
+                //Desencriptar y hashear
+                byte[] passDesencriptada = crypto.decrypt(DatatypeConverter.parseHexBinary(user.getPassword()));
+                String desencriptada = new String(passDesencriptada);
+                String hasheada = Cryptology.hashPassword(desencriptada);
+                user.setPassword(hasheada);
+                EmailPasswordChange email = new EmailPasswordChange(user.getEmail());
                 em.merge(user);
             }
             em.flush();
@@ -85,7 +93,9 @@ public class EJBUserManager implements IUserManager {
     @Override
     public User findUserByLogin(String login) throws FindUserException {
         try {
-            return em.find(User.class, login);
+            User user;
+            user = em.find(User.class, login);
+            return user;
         } catch (Exception e) {
             throw new FindUserException(e.getMessage());
         }

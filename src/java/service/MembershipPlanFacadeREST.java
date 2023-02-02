@@ -5,6 +5,7 @@
  */
 package service;
 
+import encrypt.Cryptology;
 import entities.MembershipPlan;
 import entities.User;
 import java.util.List;
@@ -132,6 +133,8 @@ public class MembershipPlanFacadeREST {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<MembershipPlan> findContentByName(@PathParam("name") String name) {
         List<MembershipPlan> plans = null;
+        //Cryptology crypto = new Cryptology();
+        //crypto.generate();
         try {
             plans = ejbM.findPlanByName(name);
         } catch (FindPlanException ex) {
