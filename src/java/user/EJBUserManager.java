@@ -156,8 +156,9 @@ public class EJBUserManager implements IUserManager {
                 throw new LoginDoesNotExistException();
             } else {
                 String passBD = user.getPassword();
+                Cryptology crypto = new Cryptology();
                 //Quitarle el hexadecimal a la contraseña y desencriptar contraseña (clave privada server)
-                byte[] passwd = Cryptology.decrypt(DatatypeConverter.parseHexBinary(password));
+                byte[] passwd = crypto.decrypt(DatatypeConverter.parseHexBinary(password));
 
                 //Hasear contraseña para comparar ambas
                 password = new String(passwd);
