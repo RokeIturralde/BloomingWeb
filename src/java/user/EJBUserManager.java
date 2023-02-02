@@ -141,8 +141,7 @@ public class EJBUserManager implements IUserManager {
         User user = new User();
 
         try {
-            user = em.find(User.class, loginUser);
-            System.out.println(user);
+            user = findUserByLogin(loginUser);
             if (user == null) {
                 throw new LoginDoesNotExistException();
             } else {
@@ -151,18 +150,17 @@ public class EJBUserManager implements IUserManager {
                 byte[] passwd = Cryptology.decrypt(DatatypeConverter.parseHexBinary(password));
 
                 //Hasear contraseña para comparar ambas
-                password = new String (passwd);
+                password = new String(passwd);
                 String resumen = Cryptology.hashPassword(password);
-                
                 //Si no coinciden asignarle a la contraseña del user "notFound"
-                if(resumen.hashCode() != passBD.hashCode()){
+                if (password.hashCode() != passBD.hashCode()) {
                     user.setPassword("notFound");
                     throw new NotThePasswordException();
                 }
-                 
+
             }
 
-        } catch (LoginDoesNotExistException ex) {
+        } catch (LoginDoesNotExistException | FindUserException ex) {
             Logger.getLogger(EJBUserManager.class.getName()).log(Level.SEVERE, null, ex);
         }
 
