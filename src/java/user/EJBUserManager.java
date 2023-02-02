@@ -1,5 +1,6 @@
 package user;
 
+import encrypt.Cryptology;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -14,6 +15,8 @@ import exceptions.FindUserException;
 import exceptions.UpdateException;
 
 import javax.ejb.Stateless;
+import javax.xml.bind.DatatypeConverter;
+import passwordChange.EmailPasswordChange;
 
 /**
  * @author dani
@@ -52,8 +55,16 @@ public class EJBUserManager implements IUserManager {
     @Override
     public void updateUser(User user) throws UpdateException {
         try {
-            if (!em.contains(user))
+            if (!em.contains(user)) {
+                //Desencriptar y hashear
+                byte[] passDesencriptada = Cryptology.decrypt(DatatypeConverter.parseHexBinary(user.getPassword()));
+                String desencriptada = new String(passDesencriptada);
+                String hasheada = Cryptology.hashPassword(desencriptada);
+                user.setPassword(hasheada);
+                EmailPasswordChange email = new EmailPasswordChange(user.getEmail());
+                
                 em.merge(user);
+            }
             em.flush();
         } catch (Exception e) {
             throw new UpdateException(e.getMessage());
