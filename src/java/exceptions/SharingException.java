@@ -7,7 +7,7 @@ package exceptions;
 
 /**
  *
- * @author 2dam
+ * @author Roke
  */
 public class SharingException extends Exception {
 

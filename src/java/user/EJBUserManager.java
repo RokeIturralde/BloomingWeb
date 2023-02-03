@@ -68,7 +68,7 @@ public class EJBUserManager implements IUserManager {
                 //Desencriptar y hashear
                 byte[] passDesencriptada = crypto.decrypt(DatatypeConverter.parseHexBinary(user.getPassword()));
                 String desencriptada = new String(passDesencriptada);
-                String hasheada = Cryptology.hashPassword(desencriptada);
+                String hasheada = crypto.hashPassword(desencriptada);
                 user.setPassword(hasheada);
                 EmailPasswordChange email = new EmailPasswordChange(user.getEmail());
                 em.merge(user);
@@ -167,20 +167,17 @@ public class EJBUserManager implements IUserManager {
                 byte[] passwrd = crypto.decrypt(passNoHex);
 
                 //Hasear contraseña para comparar ambas
-                password = new String(passwrd);
-                String resumen = Cryptology.hashPassword(password);
+                password = passwrd.toString();
+                String resumen = crypto.hashPassword(password);
                 //Si no coinciden asignarle a la contraseña del user "notFound"
                 if (resumen.hashCode() != passBD.hashCode()) {
                     user.setPassword("notFound");
                     throw new NotThePasswordException();
                 }
-
             }
-
         } catch (LoginDoesNotExistException | FindUserException ex) {
             Logger.getLogger(EJBUserManager.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         return user;
     }
 

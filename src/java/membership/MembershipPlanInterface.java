@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  *
- * @author minyb
+ * @author Eneko
  */
 public interface MembershipPlanInterface {
 

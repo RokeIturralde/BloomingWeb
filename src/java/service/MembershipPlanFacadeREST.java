@@ -31,7 +31,7 @@ import membership.MembershipPlanInterface;
 
 /**
  *
- * @author 2dam
+ * @author Eneko
  */
 @Path("entities.membershipplan")
 public class MembershipPlanFacadeREST {

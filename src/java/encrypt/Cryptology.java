@@ -29,9 +29,10 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 /**
  *
- * @author minyb
+ * @author Eneko
  */
 public class Cryptology {
+    private final Logger LOGGER = Logger.getLogger("package.encrypt");
     public void generate() {
         KeyPairGenerator generator;
         try {
@@ -53,7 +54,7 @@ public class Cryptology {
             fileOutputStream.write(pKCS8EncodedKeySpec.getEncoded());
             fileOutputStream.close();
         } catch (Exception e) {
-            e.printStackTrace(); 
+            LOGGER.severe(e.getMessage());
         }
     }
 
@@ -76,12 +77,12 @@ public class Cryptology {
             c.init(Cipher.ENCRYPT_MODE, publicKey);
             encodedMessage = c.doFinal(mensaje.getBytes());
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.severe(e.getMessage());
         }
         return encodedMessage;
     }
     
-    public static String hashPassword(String texto) {
+    public String hashPassword(String texto) {
         MessageDigest messageDigest;
         String passwordHashed = "";
         try {
@@ -92,7 +93,7 @@ public class Cryptology {
             passwordHashed = hexadecimal(resumen);
 
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            LOGGER.severe(e.getMessage());
         }
         return passwordHashed;
     }
@@ -119,7 +120,7 @@ public class Cryptology {
             c.init(Cipher.DECRYPT_MODE, privateKey);
             decodedMessage = c.doFinal(mensaje);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.severe(e.getMessage());
         }
         return decodedMessage;
     }

@@ -7,7 +7,7 @@ package entities;
 
 /**
  *
- * @author 2dam
+ * @author Dani
  */
 public enum Status {
     ENABLE,

@@ -145,6 +145,7 @@ public class UserFacadeREST {
         }
         return user;
         }
+    
     @GET
     @Path("recoverPassword/{login}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
