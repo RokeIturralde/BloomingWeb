@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author 2dam
+ * @author Eneko
  */
 @NamedQueries({
     @NamedQuery(

@@ -7,7 +7,7 @@ package exceptions;
 
 /**
  *
- * @author minyb
+ * @author Eneko
  */
 public class FindPlanException extends Exception {
 

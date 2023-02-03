@@ -20,7 +20,7 @@ import javax.persistence.PersistenceContext;
 
 /**
  *
- * @author minyb
+ * @author Eneko
  */
 @Stateless
 public class EJBMembershipPlanManager implements MembershipPlanInterface {

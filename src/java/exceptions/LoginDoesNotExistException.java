@@ -7,7 +7,7 @@ package exceptions;
 
 /**
  *
- * @author 2dam
+ * @author Eneko
  */
 public class LoginDoesNotExistException extends Exception {
 

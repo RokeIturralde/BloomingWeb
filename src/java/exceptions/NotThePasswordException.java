@@ -7,7 +7,7 @@ package exceptions;
 
 /**
  *
- * @author 2dam
+ * @author Dani
  */
 public class NotThePasswordException extends Exception {
 

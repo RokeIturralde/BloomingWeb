@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * @author Roke
  */
 public class KeyGenerator {
-
+    private final Logger LOGGER = Logger.getLogger("package.encrypt");
     public void generate() {
         final String algorithm = "RSA";
         KeyPairGenerator keyPairGenerator;

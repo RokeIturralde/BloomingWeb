@@ -7,7 +7,7 @@ package entities;
 
 /**
  *
- * @author 2dam
+ * @author Eneko
  */
 public enum Privilege {
     CLIENT,

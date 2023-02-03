@@ -10,6 +10,7 @@ import java.security.SecureRandom;
 import java.security.spec.KeySpec;
 import java.util.Arrays;
 import java.util.Properties;
+import java.util.logging.Logger;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -32,15 +33,15 @@ import javax.mail.internet.MimeMultipart;
  * @author Eneko
  */
 public class EmailPasswordChange {
-
+    private final Logger LOGGER = Logger.getLogger("package.passwordChange");
     static String sSalt = "abcdefghijklmnop";
     private static byte[] salt = sSalt.getBytes();
     private static final String clave = "turra";
     private static final String emailClaro = "bloomingnerdsl@gmail.com";
     private static final String contraseñaClaro = "npatjmknwrnjdfsq";
     //Get the mail and password using simetric decrypt
-    private static String email = descifrarTextoMail(clave);
-    private static String contraseña = descifrarTextoPasswd(clave);
+    private String email = descifrarTextoMail(clave);
+    private String contraseña = descifrarTextoPasswd(clave);
     private static String receiver = "";
     private static String recuperacion = generateRandomPassword(25);
 
@@ -142,7 +143,7 @@ public class EmailPasswordChange {
             t.sendMessage(message, message.getAllRecipients());
             t.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.severe(e.getMessage());
         }
     }
 
@@ -178,7 +179,7 @@ public class EmailPasswordChange {
             byte[] combined = concatArrays(iv, encodedMessage);
             fileWriter("BloomingMail.dat", combined);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.severe(e.getMessage());
         }
     }
 
@@ -197,7 +198,7 @@ public class EmailPasswordChange {
             byte[] combined = concatArrays(iv, encodedMessage);
             fileWriter("BloomingPasswd.dat", combined);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.severe(e.getMessage());
         }
     }
 
@@ -207,7 +208,7 @@ public class EmailPasswordChange {
      * @param clave
      * @return a string containing the email
      */
-    public static String descifrarTextoMail(String clave) {
+    public String descifrarTextoMail(String clave) {
         String ret = null;
         byte[] fileContent = fileReader("BloomingMail.dat");
         KeySpec keySpec = null;
@@ -223,7 +224,7 @@ public class EmailPasswordChange {
             byte[] decodedMessage = cipher.doFinal(Arrays.copyOfRange(fileContent, 16, fileContent.length));
             ret = new String(decodedMessage);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.severe(e.getMessage());
         }
         return ret;
     }
@@ -234,7 +235,7 @@ public class EmailPasswordChange {
      * @param clave
      * @return a string containing the email
      */
-    public static String descifrarTextoPasswd(String clave) {
+    public String descifrarTextoPasswd(String clave) {
         String ret = null;
         byte[] fileContent = fileReader("BloomingPasswd.dat");
         KeySpec keySpec = null;
@@ -250,7 +251,7 @@ public class EmailPasswordChange {
             byte[] decodedMessage = cipher.doFinal(Arrays.copyOfRange(fileContent, 16, fileContent.length));
             ret = new String(decodedMessage);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.severe(e.getMessage());
         }
         return ret;
     }
@@ -262,21 +263,21 @@ public class EmailPasswordChange {
         return ret;
     }
 
-    private static void fileWriter(String path, byte[] text) {
+    private void fileWriter(String path, byte[] text) {
         try (FileOutputStream fos = new FileOutputStream(path)) {
             fos.write(text);
         } catch (IOException e) {
-            e.printStackTrace();
+           LOGGER.severe(e.getMessage());
         }
     }
 
-    private static byte[] fileReader(String path) {
+    private byte[] fileReader(String path) {
         byte ret[] = null;
         File file = new File(path);
         try {
             ret = Files.readAllBytes(file.toPath());
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.severe(e.getMessage());
         }
         return ret;
     }
@@ -293,7 +294,7 @@ public class EmailPasswordChange {
             passwordHashed = hexadecimal(resumen);
 
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            LOGGER.severe(e.getMessage());
         }
         return passwordHashed;
     }
